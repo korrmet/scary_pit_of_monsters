@@ -1,6 +1,5 @@
 all:
-	mkdir bin
-	gcc main.c c_oop.c -I ./ -ggdb -o bin/oop	
+	gcc main.c c_oop.c -I ./ -ggdb -o c_oop	
 
 clean:
-	rm -rf bin
+	rm -rf c_oop
