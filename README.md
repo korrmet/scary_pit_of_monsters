@@ -1,7 +1,6 @@
 # scary\_pit\_of\_monsters
 
-![kenny](https://github.com/korrmet/scary_pit_of_monsters/raw/main/kenny_cheesi\
-ng.gif)
+![kenny](https://github.com/korrmet/scary_pit_of_monsters/raw/main/kenny_cheesing.gif)
 
 This is a place where creatures of your nightmares will alive.  Ugly but  pretty
 useful templates, ideas, methods will be dropped in this pit for eternal  battle
@@ -12,8 +11,7 @@ another programming language.
 
 ## my coding style
 
-![bloody\_eyes](https://github.com/korrmet/scary_pit_of_monsters/raw/main/blood\
-y_eyes.jpg)
+![bloody\_eyes](https://github.com/korrmet/scary_pit_of_monsters/raw/main/bloody_eyes.jpg)
 
 Let me explain if you still see this text. Codestyle must help you in your
 everyday work and any help you can measure. Sometimes codestyle prevents some
