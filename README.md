@@ -1,6 +1,7 @@
 # scary\_pit\_of\_monsters
 
-![kenny](https://github.com/korrmet/scary_pit_of_monsters/raw/main/kenny_cheesing.gif)
+![kenny](https://github.com/korrmet/scary_pit_of_monsters/raw/main/kenny_cheesi\
+ng.gif)
 
 This is a place where creatures of your nightmares will alive.  Ugly but  pretty
 useful templates, ideas, methods will be dropped in this pit for eternal  battle
@@ -8,6 +9,24 @@ on bloody sands arena. Make Radar Rider loud...
 
 Most of these examples are written in c because  i  have  not  practice  at  any
 another programming language. 
+
+## my coding style
+
+![bloody\_eyes](https://github.com/korrmet/scary_pit_of_monsters/raw/main/blood\
+y_eyes.jpg)
+
+Let me explain if you still see this text. Codestyle must help you in your
+everyday work and any help you can measure. Sometimes codestyle prevents some
+actions like a linux kernel codestyle. Sometimes coding style is famous because
+it's ugly like a K&R. But i'm don't care about how it beautiful. So what is and
+why my coding style exists?
+
+### Common
+### Tabs
+### Lines length
+### Number of operators and statements
+### Pros
+### Cons
 
 ## what if you need object orientied programming in c...
 
