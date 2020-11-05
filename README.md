@@ -1,4 +1,7 @@
 # scary\_pit\_of\_monsters
+
+![kenny](https://github.com/korrmet/scary_pit_of_monsters/raw/master/kenny_cheesing.gif)
+
 This is a place where creatures of your nightmares will alive.  Ugly but  pretty
 useful templates, ideas, methods will be dropped in this pit for eternal  battle
 on bloody sands arena. Make Radar Rider loud...
