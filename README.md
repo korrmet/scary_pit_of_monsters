@@ -13,18 +13,62 @@ another programming language.
 
 ![bloody\_eyes](https://github.com/korrmet/scary_pit_of_monsters/raw/main/bloody_eyes.jpg)
 
-Let me explain if you still see this text. Codestyle must help you in your
-everyday work and any help you can measure. Sometimes codestyle prevents some
-actions like a linux kernel codestyle. Sometimes coding style is famous because
+Let me explain if you still see this text.  Codestyle  must  help  you  in  your
+everyday work and any help you can measure.  Sometimes codestyle  prevents  some
+actions like a linux kernel codestyle.  Sometimes coding style is famous because
 it's ugly like a K&R. But i'm don't care about how it beautiful. So what is and
 why my coding style exists?
 
-### Common
-### Tabs
-### Lines length
-### Number of operators and statements
-### Pros
-### Cons
+### what is
+#### formatting
+
+* I don't use tab. 
+* Ident = 2 spaces. 
+* Width = 80 chars, but this rule can be broken in rare situations.  In years of
+  coding i still never broke it.
+* Several instructions in one line allowed and welcomed
+* Multiline block of code  rounded  braces  starts  in  new  line  after  parent
+  construction.
+* Instructions inside braces starts in same line as brace typed
+* Closing brace puts in same line as last instruction of block
+* Braces has interval = space. This rule can be broken in rare situations
+* Pointers declares as: `void* foo = &bar;`
+* All executable code is divided into paragraphs separated by an empty line from
+  each other. The paragraph is one complete simple though that cannot be divided
+  into nonterminal parts. This rule applies to formatting indirectly. Part of it
+  is related to the grouping provisions and will be duplicated in that section.
+
+Example:
+```
+#include <stdio.h>
+
+void swap(int* a, int* b) { int tmp = *a; *a = *b; *b = tmp; }
+
+int main (void)
+{ for (int i = 0; i < 10; i++) { printf("%d ", i);  }
+  
+  int a = 5; int b = 6;
+  if (a > b) 
+  { while (a > b) { a--; b--; printf("a: %d, b: %d\n", a, b); }
+    printf("completed!\n"); }
+  if (a/b < 10) { swap(&a, &b); printf("a/b: %d\n", a/b); }
+
+  printf("finally: a: %d, b: %d\n", a, b); }
+```
+
+#### commenting
+
+* Commenting in doxygen format is allowed and welcomed
+* Always comment first declaration of functions or macroses. Try explain what it
+  doing in brief section, how it works in details section, and comment arguments
+* Sometimes place comment inside body of function between code lines
+* Comment in same line of code of function only if it REALLY need.  This must be
+  rare situation. This comment must be as short as possible, maybe only one word
+* Comment structure  members  or  enumeration  in  doxygen  format.   In  normal
+  situation comment it using 
+
+### why
+### how
 
 ## what if you need object orientied programming in c...
 
