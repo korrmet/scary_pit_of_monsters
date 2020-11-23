@@ -65,9 +65,87 @@ int main (void)
 * Comment in same line of code of function only if it REALLY need.  This must be
   rare situation. This comment must be as short as possible, maybe only one word
 * Comment structure  members  or  enumeration  in  doxygen  format.   In  normal
-  situation comment it using 
+  situation comment it using "///<" construction. If your comment don't fetch in
+  line use standard multiline doxygen comment
+* If you want to create link to another code, place keyword in square  brackets.
+  This keywork is a name of mark which can be tagged in comment using ":".   You
+  can use it as tag system.  If you see this pattern in code - just grep  it  to
+  see another.
+
+```
+#define FOO 2 ///foo is equal 2 :foo:
+
+...
+//if [foo] defined as non-null ...
+if (FOO) { ... }
+```
 
 ### why
+
+Today most of us trying to save space for better working.   We  use  60  and  40
+percent keyboards, tiling window managers,  multiple  workspaces,  compact  text
+editors and IDE's, we buy multiple wide displays.  But for what?   To  see  much
+empty space and wallpapers. So first reason is more compact code. Don't hurry to
+buy big monitor and save your money.
+
+Just compare as example gnu style code:
+
+```
+ 1 int foo
+ 2 (int bar)
+ 3 {
+ 4     //checking for inompitable arg bar
+ 5     if (bar < 0)
+ 6     {
+ 7         return -1;
+ 8     }
+ 9 
+10     for (int i = 0; i < 10; i++)
+11     {
+12         if (bar % 3 == 1)
+13         {
+14             bar++;
+15         }
+16     }
+17
+18     return bar;
+19 }
+```
+
+And that:
+
+```
+int foo (int bar)
+{ if (bar < 0) { return -1; } //checking for incompitable arg
+  for (int i = 0; i < 10; i++) { if (bar & 3 == 1) { bar++; } }
+  return bar; }
+```
+
+Did you see that?  Same code in 4 strings instead of 19.   Do  you  really  need
+second or third, of fourth ....  n-th monitor?  How fast you scroll it, how much
+tabs and splits you will open using it?
+
+Codestyle also need to help you in work with code.  Standartisized format  helps
+to see code written by another people.  But it is not true at all.   Your  brain
+loves similar things as you doing. So common formatted code has less mistakes in
+our minds becaude we feel like this code we can write ourselves. That's so cute,
+but what happens if we see another code formatting, e.g.  Linux kernel code.  Do
+you fell headache? But this code is not bad, but you feel what it bad. Feelings
+are not good helper in programming.  At first my code style has elements of  all
+code styles i have seen.  You can rapidly switch to it if you want and switch to
+another. At second, my code style turns you to see code instead formatting. This
+is a wery useful ability.
+
+Next, you can code everywhere in any device.  Sometimes all of us worked without
+table with laptop on knees.  It's most uncomfortable thing.  My coding style has
+very simple formatting that decreases keyboard using.   It  helps  you  to  feel
+little more comfort in hard situations.
+
+Also my coding style provide features what i never see  before  which  helps  to
+create review plan and sometimes  automate  your  reviews.   This  can  increase
+speed of code checking and delivery it to product.  Maybe it will only tool  for
+code validation you available.
+
 ### how
 
 ## what if you need object orientied programming in c...
