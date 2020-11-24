@@ -37,12 +37,17 @@ why my coding style exists?
   each other. The paragraph is one complete simple though that cannot be divided
   into nonterminal parts. This rule applies to formatting indirectly. Part of it
   is related to the grouping provisions and will be duplicated in that section.
+* Try to format your code to vertical blocs if you can.
 
 Example:
 ```
 #include <stdio.h>
 
 void swap(int* a, int* b) { int tmp = *a; *a = *b; *b = tmp; }
+
+char* strings[] = { "First string",  "Second string", "Third string",
+                    "Fourth string", "Fifth string",  "Sixth string",
+                    "7-th string",   "8-th string",   "9-th string"   };
 
 int main (void)
 { for (int i = 0; i < 10; i++) { printf("%d ", i);  }
@@ -71,6 +76,8 @@ int main (void)
   This keywork is a name of mark which can be tagged in comment using ":".   You
   can use it as tag system.  If you see this pattern in code - just grep  it  to
   see another.
+* The good comment is good name of variable or function.  The  best  comment  is
+  printf, which defined by preprocessor.
 
 ```
 #define FOO 2 ///foo is equal 2 :foo:
@@ -147,6 +154,16 @@ speed of code checking and delivery it to product.  Maybe it will only tool  for
 code validation you available.
 
 ### how
+
+Main question is how to read this code.  It's simple: from up to bottom and left
+to right. Simply, is not it? 
+
+### side effects
+
+I use this codestyle approximately two years. I never lose brackets these years,
+other people forced to read my code properly, so they start to really understand
+it, i'm never feel claustrophobia when i'm using laptop, code writing is more
+comfortable.
 
 ## what if you need object orientied programming in c...
 

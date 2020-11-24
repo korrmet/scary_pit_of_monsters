@@ -18,8 +18,5 @@ int main(void)
   { printf("%2d: ", i);
     for (int j = 0; j < 3; j++)
     { ctr_pool[j]->operate(ctr_pool[j]); 
-      printf("%s", (ctr_pool[j]->state) ? "*" : " "); 
-    }
-    printf("\n");
-  }
-}
+      printf("%s", (ctr_pool[j]->state) ? "*" : " "); }
+    printf("\n"); } }

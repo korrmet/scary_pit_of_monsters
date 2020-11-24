@@ -8,9 +8,7 @@ void counter_operate(void* _this)
   THIS->_private.count++;
   if (THIS->_private.count >= THIS->_public.delimeter)
   { THIS->_private.count = 0;
-    THIS->_public.state = (THIS->_public.state) ? 0 : 1;
-  }
-}
+    THIS->_public.state = (THIS->_public.state) ? 0 : 1; } }
 
 #undef THIS
 #define THIS ((predef_counter_class_t*)_this)
@@ -21,6 +19,4 @@ void predef_counter_operate(void* _this)
   THIS->_private.count++;
   if (THIS->_private.count >= THIS->_public.cnt.delimeter)
   { THIS->_private.count = 0;
-    THIS->_public.cnt.state = (THIS->_public.cnt.state) ? 0 : 1;
-  }
-}
+    THIS->_public.cnt.state = (THIS->_public.cnt.state) ? 0 : 1; } }
