@@ -252,5 +252,10 @@ standard of language and define which standard it's actually apply)  with  bonus
 of invisible for user private fields which able to  be  used  outside.   (Python
 still can't to this)
 
+## what if you need store 1 yotta in variable...
+
+
+# Epilogue
+
 See you later when i add some more monsters in this pit and  convert  my  shitty
 English to normal. May the madness be with you.
