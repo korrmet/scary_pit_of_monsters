@@ -20,6 +20,14 @@ it's ugly like a K&R. But i'm don't care about how it beautiful. So what is and
 why my coding style exists?
 
 ### what is
+
+One day i saw finnish guy Bisquit on youtube.  He demonstrates his ideas as live
+programming.  I checked what his format is wery compact so he can display it  in
+low quality video mode.  Otherwise i'm tired on my job  because  people  do  not
+properly read another code and they take silly errors.  Maybe  it  cruel  but  i
+decide to force really read what i write and fix  most  of  errors  before  they
+occur.
+
 #### formatting
 
 * I don't use tab. 
@@ -254,6 +262,53 @@ still can't to this)
 
 ## what if you need store 1 yotta in variable...
 
+We know what Python have infinite int and it can contain any value which can  be
+placed at ROM.  It's cool feature,  but  it's  unable  in  C.   However  several
+realizations is exists at present day, but what can  be  better  than  invetntig
+bikes? Let's do it.
+
+Let's think how it can be looks.  Let we have any type of  container  what  will
+represent our infinite int.  How we set it to so big number, which  bigger  than
+64 bits can contain? We can't just type something as:
+
+```
+infint_t foo = 1000000000000000000000;
+```
+We just catch error what constant's value is too much.  I know  only  one  type,
+which C can store with any length.  This is array of chars or string.  So we can
+make some sort of this:
+
+```
+#include <stdio.h>
+
+int main(void) { printf("%s\n", "1000000000000000000000"); }
+```
+
+Keep attention how we can manipulate  strings.   It's  look  like  what  we  ask
+compiler to show us number 1 yotta. And we get it. So i think, what our infinite
+int must interact using strings.
+
+Strings we can use as argument of some function.   But  how  to  chain  together
+between function and data which it will operaty?  We need help of OOP.   I  told
+earlier how to take it on C.  We need encapsulate storage and functions get  and
+set inside class of our infinite int. This will be looks like some as:
+
+```
+...
+NEW(infint, iint);
+...
+iint->set("1000000000000000000000");
+printf("$s\n", iint->get());
+```
+Pretty simple, isn't it?   Let's  think  about  how  to  live  with  really  big
+constants. Which can be more than 1000 chars length. I think it is possible but
+it's not comfortable to see in sources. I think what we can use letters k, M, G,
+T and others. So previous example can be rewritten as:
+
+```
+iint->set("1kGGG");
+```
+It's more compact form.
 
 # Epilogue
 
