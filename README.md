@@ -300,29 +300,33 @@ NEW(infint, iint);
 iint->set("1000000000000000000000");
 printf("%s\n", iint->get());
 ```
-Pretty simple, isn't it?   Let's  think  about  how  to  live  with  really  big
-constants. Which can be more than 1000 chars length. I think it is possible but
-it's not comfortable to see in sources. I think what we can use letters k, M, G,
-T and others. So previous example can be rewritten as:
-
-```
-iint->set("1kGGG");
-```
-
-It's more compact form. To return string in compact form it will be nice if user
-will send as argument string with flags. Something like:
-
-```
-printf("%s\n", iint->get("c"));
-```
 
 Decide format of flags bit later because we have a trouble  about  how  we  will
 store it.  We have not infinite memory and we can't  create  buffer,  which  can
 contain block of data with unknown and possibly large size. Only method is using
-dynamic memory.  It seems what dynamic memory will not  be  common  in  program,
-which use our infinite int because we will  mix  large  blocks  of  memory  with
-standard-sized variables so we increase chanses of memory allocation fault.   We
-need defragmentable memory to use it.
+dynamic memory.
+
+Let we know how we will store it, but how we will operate it? We need additional
+external (according to infinite int class) toolkit which provide sum,
+multiplication and division. These functions can operate two infinite int
+numbers so if we need to add standard int to infinite int, we have two ways:
+
+1. create functions which operate infinite int and standard int.
+
+2. create standart int to infinite int converter.
+
+I like second because if we chose first we get so wide  toolkit  which  will  be
+uncomfortable in using.  I think i can optimize it later, but  today  we  create
+interface.
+
+If we substract (or add positive number  to  negative)  we  can  reach  negative
+result so we need signed infinite int.
+
+And where we will store result?  Simplest way  is  allocate  memory  and  return
+pointer to result.  User need to keep in mind what this memory must be free when
+it will not be needed.  We wanna see working concept, so at present we can force
+user of our library to control his memory himself. Maybe in real project i wrote
+some tools to automate these operations.
 
 # Epilogue
 
