@@ -298,7 +298,7 @@ set inside class of our infinite int. This will be looks like some as:
 NEW(infint, iint);
 ...
 iint->set("1000000000000000000000");
-printf("$s\n", iint->get());
+printf("%s\n", iint->get());
 ```
 Pretty simple, isn't it?   Let's  think  about  how  to  live  with  really  big
 constants. Which can be more than 1000 chars length. I think it is possible but
@@ -308,7 +308,21 @@ T and others. So previous example can be rewritten as:
 ```
 iint->set("1kGGG");
 ```
-It's more compact form.
+
+It's more compact form. To return string in compact form it will be nice if user
+will send as argument string with flags. Something like:
+
+```
+printf("%s\n", iint->get("c"));
+```
+
+Decide format of flags bit later because we have a trouble  about  how  we  will
+store it.  We have not infinite memory and we can't  create  buffer,  which  can
+contain block of data with unknown and possibly large size. Only method is using
+dynamic memory.  It seems what dynamic memory will not  be  common  in  program,
+which use our infinite int because we will  mix  large  blocks  of  memory  with
+standard-sized variables so we increase chanses of memory allocation fault.   We
+need defragmentable memory to use it.
 
 # Epilogue
 
