@@ -32,17 +32,25 @@
 ///\}
 
 int   infint_set    (void* _this, char* str  )
-{ return 0; }
+{ if (_this == NULL) { perr("NULL _this arg\n"); return -1; }
+  if (str   == NULL) { perr("NULL str arg\n");   return -1; }
+
+  return 0; }
 
 char* infint_get    (void* _this, char* flags)
-{ }
+{ if (_this == NULL) { perr("NULL _this arg\n"); return NULL; }
+  
+  return 0; }
 
 int   infint_destroy(void* _this             )
-{ return 0; }
+{ if (_this == NULL) { perr("NULL _this arg\n"); return -1; }
+
+  return 0; }
 
 int       infint_add (infint_t* a, infint_t* b)
-{ if (a == NULL) { perr("NULL a arg\n"); return NULL; }
-  if (b == NULL) { perr("NULL b arg\n"); return NULL; }
+{ if (a == NULL) { perr("NULL a arg\n"); return -1; }
+  if (b == NULL) { perr("NULL b arg\n"); return -1; }
+
   return 0; }
 
 infint_t* infint_addc(infint_t* a, infint_t* b)
@@ -58,7 +66,10 @@ infint_t* infint_addc(infint_t* a, infint_t* b)
   return c; }
 
 int       infint_sub (infint_t* a, infint_t* b)
-{ return 0; }
+{ if (a == NULL) { perr("NULL a arg\n"); return -1; }
+  if (b == NULL) { perr("NULL b arg\n"); return -1; }
+
+  return 0; }
 
 infint_t* infint_subc(infint_t* a, infint_t* b)
 { if (a == NULL) { perr("NULL a arg\n"); return NULL; }
@@ -73,19 +84,50 @@ infint_t* infint_subc(infint_t* a, infint_t* b)
   return c; }
 
 int       infint_mul (infint_t* a, infint_t* b)
-{ return 0; }
+{ if (a == NULL) { perr("NULL a arg\n"); return -1; }
+  if (b == NULL) { perr("NULL b arg\n"); return -1; }
+
+  return 0; }
 
 infint_t* infint_mulc(infint_t* a, infint_t* b)
-{ }
+{ if (a == NULL) { perr("NULL a arg\n"); return NULL; }
+  if (b == NULL) { perr("NULL b arg\n"); return NULL; }
+
+  infint_t c = infint_cln(a); 
+  if (c == NULL) { perr("can't create c\n"); return NULL; }
+  if (infint_mul(c, b) == -1) 
+  { if (infint_destroy(c) == -1) { perr("can't destroy c\n"); } 
+    perr("can't multiply a and c\n"); return NULL; }
+
+  return c; }
 
 int       infint_div (infint_t* a, infint_t* b)
-{ return 0; }
+{ if (a == NULL) { perr("NULL a arg\n"); return -1; }
+  if (b == NULL) { perr("NULL b arg\n"); return -1; }
+
+  return 0; }
 
 infint_t* infint_divc(infint_t* a, infint_t* b)
-{ }
+{ if (a == NULL) { perr("NULL a arg\n"); return NULL; }
+  if (b == NULL) { perr("NULL b arg\n"); return NULL; }
+
+  infint_t c = infint_cln(a); 
+  if (c == NULL) { perr("can't create c\n"); return NULL; }
+  if (infint_div(c, b) == -1) 
+  { if (infint_destroy(c) == -1) { perr("can't destroy c\n"); } 
+    perr("can't divide c by b\n"); return NULL; }
+
+  return c; }
 
 int       infint_cpy (infint_t* a, infint_t* b)
-{ return 0; }
+{ if (a == NULL) { perr("NULL a arg\n"); return -1; }
+  if (b == NULL) { perr("NULL b arg\n"); return -1; }
+
+  return 0; }
 
 infint_t* infint_cln (infint_t* a             )
-{ }
+{ if (a == NULL) { perr("NULL a arg\n"); return NULL; }
+  
+  infint_t* clone = NULL;
+
+  return clone;}
