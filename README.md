@@ -328,6 +328,54 @@ it will not be needed.  We wanna see working concept, so at present we can force
 user of our library to control his memory himself. Maybe in real project i wrote
 some tools to automate these operations.
 
+Let's develop what is infinite int under the hood.  It is long binary which  can
+be represented as string of chars (or bytes).  I think what we  no  need  invent
+bicycle and just look at standard large integer types in C for example uint64:
+
+```
+                                      +----+---------+
+12345678 = 0x00 00 00 00 00 BC 61 4E  |val | address |
+              |  |  |  |  |  |  |  |  +----+---------+
+              |  |  |  |  |  |  |  +->| 4E | ? + 0   |
+              |  |  |  |  |  |  |     +----+---------+
+              |  |  |  |  |  |  +---->| 61 | ? + 1   |
+              |  |  |  |  |  |        +----+---------+
+              |  |  |  |  |  +------->| BC | ? + 2   |
+              |  |  |  |  |           +----+---------+
+              |  |  |  |  +---------->| 00 | ? + 3   |
+              |  |  |  |              +----+---------+
+              |  |  |  +------------->| 00 | ? + 4   |
+              |  |  |                 +----+---------+
+              |  |  +---------------->| 00 | ? + 5   |
+              |  |                    +----+---------+
+              |  +------------------->| 00 | ? + 6   |
+              |                       +----+---------+
+              +---------------------->| 00 | ? + 7   |
+                                      +----+---------+
+```
+
+At  picture  below  you  see  how  decimal  number  stores  in  memory  in   LSB
+architecture. 4 bytes integer has border which marked as "? + 3", 2 bytes - "? +
+1" and one byte stores in single memory unit.  Infinte int can be  written  same
+but it's border will be at "? + very big number" and trailed by zero as standard
+string. Let's try to represent some number as infinite int:
+
+```
+                    +----+---------+
+12345 = 0x00 30 39  |val | address |
+           |  |  |  +----+---------+
+           |  |  +->| 39 | ? + 0   |
+           |  |     +----+---------+
+           |  +---->| 30 | ? + 1   |
+           |        +----+---------+
+           +------->| 00 | ? + 2   |
+                    +----+---------+   
+```
+
+As we can see naturally we have two-bytes length number with trailing  zero.   I
+think it pretty compact writing and  compitable  in  some  cases  with  standard
+types.
+
 # Epilogue
 
 See you later when i add some more monsters in this pit and  convert  my  shitty
