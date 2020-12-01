@@ -3,9 +3,9 @@
 
 /** \brief settings for infinite int */
 typedef struct //infint_settings_t
-{ void* (*alloc  )(size_t        ); ///< define memory allocator function
-  void* (*realloc)(void* , size_t); ///< define memory reallocation function
-  void  (*free   )(void*         ); ///< define memory free_function
+{ void* (*alloc  )(size_t s          ); ///< define memory allocator function
+  void* (*realloc)(void*  p, size_t s); ///< define memory reallocation function
+  void  (*free   )(void*  p          ); ///< define memory free_function
 } infint_settings_t;
 
 /** \brief public fields of class infinite int */
@@ -19,7 +19,7 @@ typedef struct //infint_t
     * \return  error
     * \retval  0   all ok
     * \retval  -1  error */
-  int               (*set)    (char* str  );
+  int               (*set)    (void* _this, char* str  );
   /** \brief   getter
    *  \details return pointer to string of symbols which contain representation
    *           of internal storage in human readable form as described in flags.
@@ -34,14 +34,14 @@ typedef struct //infint_t
    *                 will have problems cause multiple access to getter
    *  \retval  NULL  execution error
    *  \retval  !NULL pointer to string of symbols */
-  char*             (*get)    (char* flags);
+  char*             (*get)    (void* _this, char* flags);
   /** \brief   destructor
    *  \details free all used memory. define settings bedore using this method.
    *  \param   _this pointer to current object
    *  \return  error
    *  \retval  0  all ok
    *  \retval  -1 error */
-  int               (*destroy)(void* _this);
+  int               (*destroy)(void* _this             );
   /** \brief   settings of this number
    *  \setails in most contains settings which could be defined as global, but
    *           IMHO it is a bad idea because i don't wanna chain your hands
@@ -66,9 +66,9 @@ typedef struct //infint_class_t
   infint_private_t _private;
 } infint_class_t;
 
-int   infint_set    (char* str  ); ///< setter body as described above
-char* infint_get    (char* flags); ///< getter body as described above
-int   infint_destroy(void* _this); ///< destructor body as descibed above
+int   infint_set    (void* _this, char* str  ); ///< setter     body
+char* infint_get    (void* _this, char* flags); ///< getter     body
+int   infint_destroy(void* _this             ); ///< destructor body
 
 #define infint__ctor { ._public.set = infint_set, \
                        ._public.get = infint_get }
@@ -89,7 +89,7 @@ int   infint_destroy(void* _this); ///< destructor body as descibed above
  *  \return  error
  *  \retval  0  all ok
  *  \retval  -1 error */
-int       infint_add (infint_class_t* a, infint_class_t* b);
+int       infint_add (infint_t* a, infint_t* b);
 
 /** \brief   add one infinite int to another
  *  \details creates a new variable and store result to it without modifying
@@ -101,7 +101,7 @@ int       infint_add (infint_class_t* a, infint_class_t* b);
  *  \return  pointer to number 'c' in sequence "a+b=c"
  *  \retval  NULL  execution error
  *  \retval  !NULL pointer to result */
-infint_t* infint_addc(infint_class_t* a, infint_class_t* b);
+infint_t* infint_addc(infint_t* a, infint_t* b);
 
 /** \brief   substract one intfinite int from another
  *  \details result stored inside 'a' number (see description of params)
@@ -110,7 +110,7 @@ infint_t* infint_addc(infint_class_t* a, infint_class_t* b);
  *  \return  error
  *  \retval  0  all ok
  *  \retval  -1 error */
-int       infint_sub (indint_class_t* a, infint_class_t* b);
+int       infint_sub (infint_t* a, infint_t* b);
 
 /** \brief   substract one infinite int from another
  *  \details crates a new variable and store result to it without modifying
@@ -122,7 +122,7 @@ int       infint_sub (indint_class_t* a, infint_class_t* b);
  *  \return  pointer to number 'c' in sequence "a-b=c"
  *  \retval  NULL  execution error
  *  \retval  !NULL pointer to result */
-infint_t* infint_subc(indint_class_t* a, infint_class_t* b);
+infint_t* infint_subc(infint_t* a, infint_t* b);
 
 /** \brief   multiply two infinite int
  *  \details result stored inside 'a' number (see description of params)
@@ -131,7 +131,7 @@ infint_t* infint_subc(indint_class_t* a, infint_class_t* b);
  *  \return  error
  *  \retval  0  all ok
  *  \retval  -1 error */
-int       infint_mul (infint_class_t* a, infint_class_t* b);
+int       infint_mul (infint_t* a, infint_t* b);
 
 /** \brief   multiply two infinite int
  *  \details crates a new variable and store result to it without modifying
@@ -143,7 +143,7 @@ int       infint_mul (infint_class_t* a, infint_class_t* b);
  *  \return  pointer to number 'c' in sequence "a*b=c"
  *  \retval  NULL  execution error
  *  \retval  !NULL pointer to result */
-infint_t* infint_mulc(infint_class_t* a, infint_class_t* b);
+infint_t* infint_mulc(infint_t* a, infint_t* b);
 
 /** \brief   divide one infinite int by another
  *  \details result stored inside 'a' number (see description of params)
@@ -152,7 +152,7 @@ infint_t* infint_mulc(infint_class_t* a, infint_class_t* b);
  *  \return  error
  *  \retval  0  all ok
  *  \retval  -1 error */
-int       infint_div (infint_class_t* a, infint_class_t* b);
+int       infint_div (infint_t* a, infint_t* b);
 
 /** \brief   divide one infinite int by another
  *  \details crates a new variable and store result to it without modifying
@@ -164,7 +164,44 @@ int       infint_div (infint_class_t* a, infint_class_t* b);
  *  \return  pointer to number 'c' in sequence "a/b=c"
  *  \retval  NULL  execution error
  *  \retval  !NULL pointer to result */
-infint_t* infint_divc(infint_class_t* a, infint_class_t* b);
+infint_t* infint_divc(infint_t* a, infint_t* b);
+
+/** \brief   copy one infinite int to another
+ *  \param   a  number in sequence "a=b"
+ *  \param   b  number in sequence "a=b"
+ *  \return  error
+ *  \retval  0  all ok
+ *  \retval  -1 error */
+int       infint_cpy (infint_t* a, infint_t* b);
+
+/** \brief   clone infinite int variable
+ *  \details creates a new variable and copy all fields of class and memory
+ *           in created variable
+ *           \note don't ignore result of this function cause it can be source
+ *                 of memory leak.
+ *  \param   a     infinite int number
+ *  \return  pointer to cloned number
+ *  \retval  NULL  execution error
+ *  \retval  !NULL pointer to result */
+infint_t* infint_cln (infint_t* a             );
 
 ///\}
+
+/** \defgroup debugging settings
+ *  \details  contains commented macro defines wich activate some sorts of debug
+ *            messages. Best way to activate some output is put -D flags to
+ *            compiler, but you can just uncomment what you interested for. if 
+ *            needed place include before INFINT_PRINTF definition but a better
+ *            way tell your compiler to include needed file. E.g. gcc have flag
+ *            "-include <filename>" */
+///\{
+
+//#define INFINT_PRINTF      ///< set printf realization
+//#define INFINT_PERR_ENABLE ///< activate ERRors output
+//#define INFINT_PWRN_ENABLE ///< activate WaRNing output
+//#define INFINT_PMSS_ENABLE ///< activate MeSSages output
+//#define INFINT_PDBG_ENABLE ///< activate DeBuG-specific output
+
+///\}
+
 #endif//INFINT_H
