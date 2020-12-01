@@ -376,6 +376,92 @@ As we can see naturally we have two-bytes length number with trailing  zero.   I
 think it pretty compact writing and  compitable  in  some  cases  with  standard
 types.
 
+Few words about LSB and MSB.  LSB is most useful in computations  because  carry
+grows toward and also type conversion is pretty easy.  MSB is useful in  places,
+where machine codes will be read by human because it's  looks  like  a  standard
+notation.  If we look at net traffic using wireshark  more  comfortable  to  see
+something like this:
+
+```
+00 30 39
+```
+
+because we automatically see 0x00 30 39.  But if we want to examine memory using
+debugger we can see something like this:
+
+```
+39 30 00
+```
+and in mind we see 0x39 30 00 instead 0x00 30 39.  So  as  we  try  to  goal  in
+computation problem, will be better if we will still use LSB.
+
+And first problem we need to solve how to set decimal string  into  binary.   In
+common case recursively divide number by 2 and store carry.
+
+```
+123(10) = 123 | 2
+          122 +---
+          --- | 61 | 2
+            1   60 +---
+            |   -- | 30 | 2
+            |    1   30 +---
+            |    |   -- | 15 | 2
+            |    |    0   14 +--
+            |    |    |   -- | 7 | 2
+            |    |    |    1   6 +--
+            |    |    |    |   - | 3 | 2
+            |    |    |    |   1   2 +--
+            |    |    |    |   |   - | 1 | 2
+            |    |    |    |   |   1   0 +--
+            |    |    |    |   |   |   - | 0
+            |    |    |    |   |   |   1
+            |    |    |    |   |   |   |
+            v    v    v    v   v   v   v
+            1    1    0    1   1   1   1   0 <- big endian form
+                                           |
+            +------------------------------+
+            |
+            01111011                         <- little endian form
+```
+
+It's wery interesting tale about MSB, LSB, little and big endian orders  but  in
+fact almost all of us have little endian machines at their homes with MSB order.
+And in fact every byte we need to convert big endian form to little endian.  And
+as we see we need a storage to mind results of every iteration.
+
+Let's think about this temporary buffer. We will store it result of every
+division and this number is possibly infinite lenght. But not greater than
+origin number.
+
+Another operative memory we need to every division in algorhytm. Let's see
+school method of division which were used in old arithmometers too:
+
+```
+123456 | 2
+12     +------
+---    | 61728
+ 03
+  2
+  -
+  14
+  14
+  --
+   05
+    4
+    -
+    16
+    16
+    --
+     0 <-- carry
+```
+
+In every division iteration we use not greater than 2 digits and at  every  step
+we forgot old results. Maximum number, which can be produced by 2 and anu number
+we can reach in decimal form is 18 so we don't need many memory space  to  every
+step of division.  For it we can use standard computer arithmetics  and  1  byte
+operations will enough. As we have maximum operating value as 18 and it contains
+2 digits, we can scan input string by 1 or 2 characters per iteration.
+
 # Epilogue
 
 See you later when i add some more monsters in this pit and  convert  my  shitty

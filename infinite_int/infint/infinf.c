@@ -1,3 +1,4 @@
+#include <string.h>
 #include "infint.h"
 
 /** \addtogroup debugging and logging environment macroses */
@@ -34,7 +35,7 @@
 int   infint_set    (void* _this, char* str  )
 { if (_this == NULL) { perr("NULL _this arg\n"); return -1; }
   if (str   == NULL) { perr("NULL str arg\n");   return -1; }
-
+  
   return 0; }
 
 char* infint_get    (void* _this, char* flags)
