@@ -395,6 +395,55 @@ debugger we can see something like this:
 and in mind we see 0x39 30 00 instead 0x00 30 39.  So  as  we  try  to  goal  in
 computation problem, will be better if we will still use LSB.
 
+What happens if we have number 5570645? Let's look at this number in hex and try
+to apply our requirements:
+
+```
+                         +----+---------+
+5570645 = 0x00 55 00 55  |val | address |
+             |  |  |  |  +----+---------+
+             |  |  |  +->| 55 | ? + 0   |
+             |  |  |     +----+---------+
+             |  |  +---->| 00 | ? + 1   |<-- this is not end of number but we
+             |  |        +----+---------+    think what is
+             |  +------->| 55 | ? + 2   |
+             |           +----+---------+
+             +---------->| 00 | ? + 3   |
+                         +----+---------+
+```
+
+We can store length of this type in variable, but standard variables  has  their
+maximum value so if we do that out infinite int will not be infinite. Better way
+it use escape-sequences. Just use ASCII code of '\' (0x5C) before zero byte.
+
+```
+                         +----+---------+
+5570645 = 0x00 55 00 55  |val | address |
+             |  |  |  |  +----+---------+
+             |  |  |  +->| 55 | ? + 0   |
+             |  |  |     +----+---------+
+             |  |  |     | 5C | ? + 1   |<-- escape-symbol
+             |  |  |     +----+---------+
+             |  |  +---->| 00 | ? + 2   |<-- read it as 0x00
+             |  |        +----+---------+
+             |  +------->| 55 | ? + 3   |
+             |           +----+---------+
+             +---------->| 00 | ? + 4   |<-- null-terminator
+                         +----+---------+
+```
+
+This method increase some needed  space  but  it  apply  true  possibly-infinite
+sequence.
+
+After all we can set our number in multiple formats: binary, octal,  hexadecimal
+an decimal. All of these formats has prefix (but no decimal) '0' and next may be
+letter 'x' or 'b' for hexadecimal or binary.  So we will have multiple parser of
+our number. Also we can have negative numbers and first character will be minus.
+In my opinion best way at present is just store minus as field of structure and
+sometimes when  we  try  to  add  positive  number  to  negative  just  actually
+substract.  Let math tricks will be little bit later, ok?  I just wanna start it
+now.
+
 And first problem we need to solve how to set decimal string  into  binary.   In
 common case recursively divide number by 2 and store carry.
 
