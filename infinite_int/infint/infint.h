@@ -201,6 +201,7 @@ infint_t* infint_cln (infint_t* a             );
 //#define INFINT_PWRN_ENABLE ///< activate WaRNing output
 //#define INFINT_PMSS_ENABLE ///< activate MeSSages output
 //#define INFINT_PDBG_ENABLE ///< activate DeBuG-specific output
+//#define INFINT_WORDLEN     ///< length of word in bits (default 1 bit)
 
 ///\}
 

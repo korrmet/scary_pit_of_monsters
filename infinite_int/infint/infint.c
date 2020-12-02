@@ -1,6 +1,10 @@
 #include <string.h>
 #include "infint.h"
 
+#ifndef INFINT_WORDLEN
+#define INFINT_WORDLEN 1
+#endif
+
 /** \addtogroup debugging and logging environment macroses */
 ///\{
 #if (defined(INFINT_PERR_ENABLE) && defined(INFINT_PRINTF))
@@ -212,14 +216,85 @@ infint_t* infint_cln (infint_t* a             )
 
   return clone;}
 
-int infint_parse_bin(void* _this, char* str)
-{ return 0; }
+/** \brief   check what symbol in requested alphabet
+ *  \details just checking every alphabet symbol in loop
+ *  \param   sym      symbol to check
+ *  \param   alphabet pointer to alphabet array
+ *  \param   length   length of alphabet array
+ *  \return  result or error
+ *  \retval  -1       error
+ *  \retval  0        symbol is not in alphabet
+ *  \retval  1        symbol is in alphabet */
+int infint_is_in_alphabet(char sym, char* alphabet, int length)
+{ if (alphabet == NULL) { perr("NULL aplhabet argument\n"); return -1; }
+  if (length   == 0   ) { perr("empty alphabet\n");         return -1; }
+ 
+  for (int i = 0; i < length; i++) { if (sym == alphabet[i]) { return 0; } }
 
+  return 0; }
+
+INFINT_SKIP_SYMBOLS_LEN 2
+char infint_skip_symbols[INFINT_SKIP_SYMBOLS_LEN]
+= { ' ', '\t' };
+
+INFINT_BIN_ALPHABET_LEN 2
+char infint_bin_alphabet[INFINT_BIN_ALPHABET_LEN] 
+= { '0', '1' };
+
+int infint_parse_bin(void* _this, char* str)
+{ if (_this == NULL) { perr("NULL _this arg\n"); return -1; }
+  if (str   == NULL) { perr("NULL str arg\n");   return -1; }
+
+  //validate string
+  { char* current = str;
+    while (*current != NULL) 
+    { switch (infint_is_in_alphabet(*current,
+                                     infint_skip_symbols,
+                                     INFINT_SKIP_SYMBOLS_LEN))
+      { case 0:  break;
+        case 1:  current++; break;
+        case -1: perr("(%08x) unable to check \'%c\' for skip symbol\n", 
+                       _this, *current);
+                 return -1;
+        default: perr("(%08x) unexpected state\n", _this); return -1; }
+      switch (infint_is_in_alphabet(*current, 
+                                     infint_bin_alphabet,
+                                     INFINT_BIN_ALPHABET_LEN))
+      { case 0:  perr("(%08x) unexpected symbol \'%c\'\n", _this, *current);
+                 return -1;
+        case 1:  break;
+        case -1: perr("(%08x) unable to check \'%c\' for binary symbol\n"); 
+                 return -1;
+        default: perr("(%08x) unexpected state\n", _this; return -1; }
+      //if (infint_is_in_alphabet(*current,
+      //                           infint_bin_alphabet, 
+      //                           INFINT_BIN_ALPHABET_LEN) == -1) 
+      //{ perr("(%08x) unexpected symbol \'%c\'\n", _this, *current); 
+      //  return -1; }
+      current++; } }
+
+  return 0; }
+
+INFINT_OCT_ALPHABET_LEN 8
+char infint_oct_alphabet[INFINT_OCT_ALPHABET_LEN] = 
+{ '0', '1', '2', '3', '4'};
+  
 int infint_parse_oct(void* _this, char* str)
 { return 0; }
 
+INFINT_DEC_ALPHABET_LEN 10
+char infint_dec_alphabet[INFINT_DEC_ALPHABET_LEN] =
+{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+
 int infint_parse_dec(void* _this, char* str)
-{ return 0; }
+{ 
+  return 0; }
+
+INFINT_HEX_ALPHABET_LEN 22
+char infint_hex_alphabet[INFINT_HEX_ALPHABET_LEN] = 
+{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 
+  'A', 'B', 'C', 'D', 'E', 'F',
+  'a', 'b', 'c', 'd', 'e', 'f' };
 
 int infint_parse_hex(void* _this, char* str)
 { return 0; }
