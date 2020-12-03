@@ -241,37 +241,41 @@ INFINT_BIN_ALPHABET_LEN 2
 char infint_bin_alphabet[INFINT_BIN_ALPHABET_LEN] 
 = { '0', '1' };
 
+/** \brief   validates number in specified format
+ *  \details scan string and check what int contain only valid symbols
+ *  \param   str          source string
+ *  \param   alphabet     array of symbols of alphabet of expression
+ *  \param   alphabet_len length of this array
+ *  \param   skip         array of symbols which will ignore while parsing
+ *  \param   skip_len     length of this array
+ *  \return  result of validation or error
+ *  \retval  -1           error
+ *  \retval  0            string is invalid
+ *  \retval  1            string is valid */
+int infint_validate(char* str, char* alphabet, int alphabet_len, 
+                               char* skip,     int skip_len)
+{ while (*str != 0)
+  { switch (infint_is_in_alphabet(*str, skip, skip_len))
+    { case  0: break;
+      case  1: str++; break;
+      case -1: perr("can't check symbol \'%c\'\n", *str); return -1; 
+      default: perr("unexpected validator state\n");      return -1; } 
+    switch (infint_is_in_alphabet(*str, alphabet, alphabet_len))
+    { case  0: return 0;
+      case  1: break;
+      case -1: perr("can't check symbol \'%c\'\n", *str); return -1;
+      default: perr("unexpected validator state\n");      return -1; } 
+    str++; }
+  return 1; }
+
 int infint_parse_bin(void* _this, char* str)
 { if (_this == NULL) { perr("NULL _this arg\n"); return -1; }
   if (str   == NULL) { perr("NULL str arg\n");   return -1; }
 
-  //validate string
-  { char* current = str;
-    while (*current != NULL) 
-    { switch (infint_is_in_alphabet(*current,
-                                     infint_skip_symbols,
-                                     INFINT_SKIP_SYMBOLS_LEN))
-      { case 0:  break;
-        case 1:  current++; break;
-        case -1: perr("(%08x) unable to check \'%c\' for skip symbol\n", 
-                       _this, *current);
-                 return -1;
-        default: perr("(%08x) unexpected state\n", _this); return -1; }
-      switch (infint_is_in_alphabet(*current, 
-                                     infint_bin_alphabet,
-                                     INFINT_BIN_ALPHABET_LEN))
-      { case 0:  perr("(%08x) unexpected symbol \'%c\'\n", _this, *current);
-                 return -1;
-        case 1:  break;
-        case -1: perr("(%08x) unable to check \'%c\' for binary symbol\n"); 
-                 return -1;
-        default: perr("(%08x) unexpected state\n", _this; return -1; }
-      //if (infint_is_in_alphabet(*current,
-      //                           infint_bin_alphabet, 
-      //                           INFINT_BIN_ALPHABET_LEN) == -1) 
-      //{ perr("(%08x) unexpected symbol \'%c\'\n", _this, *current); 
-      //  return -1; }
-      current++; } }
+  infint_validate(str, infint_bin_alphabet, INFINT_BIN_ALPHABET_LEN,
+                       infint_skip_symbols, INFINT_SKIP_SYMBOLS_LEN);
+
+  //TODO: fucking parse!
 
   return 0; }
 
