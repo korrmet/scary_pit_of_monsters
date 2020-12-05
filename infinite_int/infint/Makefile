@@ -9,4 +9,4 @@ infint_validate:
 	@./tests/bin/$@
 
 clean:
-	@rm -rf bin
+	@rm -rf ./tests/bin
