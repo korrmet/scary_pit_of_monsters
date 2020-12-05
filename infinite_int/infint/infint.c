@@ -159,7 +159,7 @@ infint_t* infint_subc(infint_t* a, infint_t* b)
 { if (a == NULL) { perr("NULL a arg\n"); return NULL; }
   if (b == NULL) { perr("NULL b arg\n"); return NULL; }
 
-  infint_t c = infint_cln(a); 
+  infint_t* c = infint_cln(a); 
   if (c == NULL) { perr("can't create c\n"); return NULL; }
   if (infint_sub(c, b) == -1) 
   { if (infint_destroy(c) == -1) { perr("can't destroy c\n"); } 
@@ -177,7 +177,7 @@ infint_t* infint_mulc(infint_t* a, infint_t* b)
 { if (a == NULL) { perr("NULL a arg\n"); return NULL; }
   if (b == NULL) { perr("NULL b arg\n"); return NULL; }
 
-  infint_t c = infint_cln(a); 
+  infint_t* c = infint_cln(a); 
   if (c == NULL) { perr("can't create c\n"); return NULL; }
   if (infint_mul(c, b) == -1) 
   { if (infint_destroy(c) == -1) { perr("can't destroy c\n"); } 
@@ -195,7 +195,7 @@ infint_t* infint_divc(infint_t* a, infint_t* b)
 { if (a == NULL) { perr("NULL a arg\n"); return NULL; }
   if (b == NULL) { perr("NULL b arg\n"); return NULL; }
 
-  infint_t c = infint_cln(a); 
+  infint_t* c = infint_cln(a); 
   if (c == NULL) { perr("can't create c\n"); return NULL; }
   if (infint_div(c, b) == -1) 
   { if (infint_destroy(c) == -1) { perr("can't destroy c\n"); } 
@@ -233,11 +233,11 @@ int infint_is_in_alphabet(char sym, char* alphabet, int length)
 
   return 0; }
 
-INFINT_SKIP_SYMBOLS_LEN 2
+#define INFINT_SKIP_SYMBOLS_LEN 2
 char infint_skip_symbols[INFINT_SKIP_SYMBOLS_LEN]
 = { ' ', '\t' };
 
-INFINT_BIN_ALPHABET_LEN 2
+#define INFINT_BIN_ALPHABET_LEN 2
 char infint_bin_alphabet[INFINT_BIN_ALPHABET_LEN] 
 = { '0', '1' };
 
@@ -279,14 +279,14 @@ int infint_parse_bin(void* _this, char* str)
 
   return 0; }
 
-INFINT_OCT_ALPHABET_LEN 8
+#define INFINT_OCT_ALPHABET_LEN 8
 char infint_oct_alphabet[INFINT_OCT_ALPHABET_LEN] = 
 { '0', '1', '2', '3', '4'};
   
 int infint_parse_oct(void* _this, char* str)
 { return 0; }
 
-INFINT_DEC_ALPHABET_LEN 10
+#define INFINT_DEC_ALPHABET_LEN 10
 char infint_dec_alphabet[INFINT_DEC_ALPHABET_LEN] =
 { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
@@ -294,7 +294,7 @@ int infint_parse_dec(void* _this, char* str)
 { 
   return 0; }
 
-INFINT_HEX_ALPHABET_LEN 22
+#define INFINT_HEX_ALPHABET_LEN 22
 char infint_hex_alphabet[INFINT_HEX_ALPHABET_LEN] = 
 { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 
   'A', 'B', 'C', 'D', 'E', 'F',
