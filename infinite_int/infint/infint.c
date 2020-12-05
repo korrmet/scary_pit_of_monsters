@@ -254,12 +254,23 @@ char infint_bin_alphabet[INFINT_BIN_ALPHABET_LEN]
  *  \retval  1            string is valid */
 int infint_validate(char* str, char* alphabet, int alphabet_len, 
                                char* skip,     int skip_len)
-{ while (*str != 0)
-  { switch (infint_is_in_alphabet(*str, skip, skip_len))
-    { case  0: break;
-      case  1: str++; break;
-      case -1: perr("can't check symbol \'%c\'\n", *str); return -1; 
-      default: perr("unexpected validator state\n");      return -1; } 
+{ if (str          == NULL) { perr("NULL arg str\n");      return -1; }
+  if (alphabet     == NULL) { perr("NULL arg alphabet\n"); return -1; }
+  if (alphabet_len == 0   ) { perr("empty alphabet\n");    return -1; }
+ 
+  if ((skip == NULL) && (skip_len > 0)) 
+  { pwrn("skip-symbol alphabet pointer is empty but it's length isn't 0\n"); 
+    pwrn("maybe you forgot to tell which skip-symbols are needed?\n"); }
+  if ((skip != NULL) && (skip_len == 0))
+  { pwrn("skip-symbol alphabet pointer is not empty but it's length is 0\n");
+    pwrn("if you don't want to skip symbols just set skip arg to null\n"); }
+  while (*str != 0)
+  { if ((skip != NULL) && (skip_len > 0))
+    { switch (infint_is_in_alphabet(*str, skip, skip_len))
+      { case  0: break;
+        case  1: str++; break;
+        case -1: perr("can't check symbol \'%c\'\n", *str); return -1; 
+        default: perr("unexpected validator state\n");      return -1; } }
     switch (infint_is_in_alphabet(*str, alphabet, alphabet_len))
     { case  0: return 0;
       case  1: break;
