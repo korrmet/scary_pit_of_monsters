@@ -229,7 +229,7 @@ int infint_is_in_alphabet(char sym, char* alphabet, int length)
 { if (alphabet == NULL) { perr("NULL aplhabet argument\n"); return -1; }
   if (length   == 0   ) { perr("empty alphabet\n");         return -1; }
  
-  for (int i = 0; i < length; i++) { if (sym == alphabet[i]) { return 0; } }
+  for (int i = 0; i < length; i++) { if (sym == alphabet[i]) { return 1; } }
 
   return 0; }
 
