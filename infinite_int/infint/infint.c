@@ -290,12 +290,23 @@ int infint_parse_bin(void* _this, char* str)
   uint8_t* mem = (uint8_t*)((infint_class_t*)_this)->_private.mem;
   int byte_ctr = 0;
   while (*str != 0)
-  { switch (*str)
-    { case '0': *mem &= ~(1 << byte_ctr);
-      case '1': *mem |=   1 << byte_ctr;
+  { if (infint_is_in_alphabet(*str, 
+                              infint_skip_symbols, 
+                              INFINT_SKIP_SYMBOLS_LEN) == 1)
+    { str++; continue; }
+    switch (*str)
+    { case '0': *mem &= ~(1 << (7 - byte_ctr)); break;
+      case '1': *mem |=   1 << (7 - byte_ctr);  break;
       default: perr("unexpected symbol \'%c\'\n", *str); return -1; }
     byte_ctr++; if (byte_ctr >= 8) { byte_ctr = 0; mem++; } str++; }
-  //TODO: still unfinished
+  //changing byte order
+  uint8_t* mem_start = (uint8_t*)((infint_class_t*)_this)->_private.mem;
+  uint8_t* mem_end   = mem;
+  while (mem_start < mem_end)
+  { uint8_t tmp; tmp = *mem_start; *mem_start = *mem_end; *mem_end = tmp;
+    mem_start++; mem_end--; }
+
+  //TODO: add escape-symbols if it needed in result
 
   return 0; }
 

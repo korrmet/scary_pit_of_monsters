@@ -14,12 +14,17 @@ int main(void)
 
   printf("-->valid call of binary parser\n"); tests_counter++;
   test__class._private.mem = array; 
-  if (infint_parse_bin(test, "0b 0101 0101 1010 1010") == 0)
+  if (infint_parse_bin(test, "0011 1100 1111 1111 1010 1010") == 0)
   { passed_counter++; } else { printf("fail\n"); }
 
-  for (int i = 0; i < 10; i++)
-  { printf("%02x ", array[i]); }
-  printf("\n");
+  printf("-->examine memory after parsing\n"); tests_counter++;
+  if (*((uint32_t*)array) == 0x003CFFAA)
+  { passed_counter++; } 
+  else { printf("fail\n"); 
+         printf("must be: AA FF 3C 00 00 00 00 00 00 00\n");
+         printf("as is:   ");
+         for (int i = 0; i < 10; i++) { printf("%02X ", array[i]); } 
+         printf("\n");}
 
   printf("stat: %d/%d passed\n", passed_counter, tests_counter); 
   if (tests_counter > passed_counter) { result = -1; }
