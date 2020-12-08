@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdint.h>
 #include "infint.h"
 
 #ifndef INFINT_WORDLEN
@@ -286,7 +287,15 @@ int infint_parse_bin(void* _this, char* str)
   infint_validate(str, infint_bin_alphabet, INFINT_BIN_ALPHABET_LEN,
                        infint_skip_symbols, INFINT_SKIP_SYMBOLS_LEN);
 
-  //TODO: fucking parse!
+  uint8_t* mem = (uint8_t*)((infint_class_t*)_this)->_private.mem;
+  int byte_ctr = 0;
+  while (*str != 0)
+  { switch (*str)
+    { case '0': *mem &= ~(1 << byte_ctr);
+      case '1': *mem |=   1 << byte_ctr;
+      default: perr("unexpected symbol \'%c\'\n", *str); return -1; }
+    byte_ctr++; if (byte_ctr >= 8) { byte_ctr = 0; mem++; } str++; }
+  //TODO: still unfinished
 
   return 0; }
 

@@ -1,5 +1,4 @@
 #include <stdio.h>
-#define INFINT_PRINTF printf
 #define INFINT_PERR_ENABLE
 #define INFINT_PWRN_ENABLE
 #define INFINT_PMSS_ENABLE
