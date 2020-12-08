@@ -9,19 +9,7 @@ all: $(TESTS)
 
 .PHONY: clean
 
-infint_validate:
-	@echo $@
-	@mkdir -p tests/bin
-	@gcc tests/$@.c -I/ $(DEFINES) -g -o tests/bin/$@
-	@./tests/bin/$@
-
-infint_is_in_alphabet:
-	@echo $@
-	@mkdir -p tests/bin
-	@gcc tests/$@.c -I/ $(DEFINES) -g -o tests/bin/$@
-	@./tests/bin/$@
-
-infint_parse_bin:
+%: tests/%.c
 	@echo $@
 	@mkdir -p tests/bin
 	@gcc tests/$@.c -I/ $(DEFINES) -g -o tests/bin/$@
