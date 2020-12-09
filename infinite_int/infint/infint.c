@@ -37,6 +37,8 @@
 #endif
 ///\}
 
+#define INFINT_ESCAPE_SYMBOL '\\'
+
 /** \brief   parse string with binary number
  *  \details string will be parset till zero-terminator. spaces will be ignored
  *  \param   _this pointer to object of class which number will be stored
@@ -238,6 +240,10 @@ int infint_is_in_alphabet(char sym, char* alphabet, int length)
 char infint_skip_symbols[INFINT_SKIP_SYMBOLS_LEN]
 = { ' ', '\t' };
 
+#define INFINT_SPECIAL_SYMBOLS_LEN 2
+char infint_special_symbols[INFINT_SPECIAL_SYMBOLS_LEN]
+= { 0, INFINT_ESCAPE_SYMBOL };
+
 #define INFINT_BIN_ALPHABET_LEN 2
 char infint_bin_alphabet[INFINT_BIN_ALPHABET_LEN] 
 = { '0', '1' };
@@ -299,14 +305,26 @@ int infint_parse_bin(void* _this, char* str)
       case '1': *mem |=   1 << (7 - byte_ctr);  break;
       default: perr("unexpected symbol \'%c\'\n", *str); return -1; }
     byte_ctr++; if (byte_ctr >= 8) { byte_ctr = 0; mem++; } str++; }
+
   //changing byte order
   uint8_t* mem_start = (uint8_t*)((infint_class_t*)_this)->_private.mem;
-  uint8_t* mem_end   = mem;
+  uint8_t* mem_end   = mem - 1; //previous is real last member
   while (mem_start < mem_end)
   { uint8_t tmp; tmp = *mem_start; *mem_start = *mem_end; *mem_end = tmp;
     mem_start++; mem_end--; }
 
-  //TODO: add escape-symbols if it needed in result
+  //add escape-symbols if it needed in result
+  uint8_t* current = (uint8_t*)((infint_class_t*)_this)->_private.mem;
+  mem_end   = mem;
+  while (current < mem_end)
+  { switch (infint_is_in_alphabet(*current,
+                                  infint_special_symbols,
+                                  INFINT_SPECIAL_SYMBOLS_LEN))
+    { case 0: break;
+      case 1: /* TODO: think about how to insert symbol in memory */ break;
+      default: perr("can't parse symbol during escape-symbols adding\n"); 
+               return -1; } 
+    current++; }
 
   return 0; }
 
