@@ -444,27 +444,43 @@ sometimes when  we  try  to  add  positive  number  to  negative  just  actually
 substract.  Let math tricks will be little bit later, ok?  I just wanna start it
 now.
 
-And few words about memory storage model. There is two ways to store in memory:
+And few words about memory storage model.  We need abstraction  layer.   I  have
+tried to solve problem of storing infinite values in memory many ways and i see,
+what doesn't exist right methods for any case.  That's why  we  really  need  to
+abstract memory model. To do that we need an interface. When i think about it i
+fount some use-cases:
 
-1. Store  like a string using large memory block.  This way  is  comfortable  to
-   reading block and store in constant memory, it is very efficent using  memory
-   space.  As we diescribed below we need to use dynamic  memory.   So  when  we
-   modify our variable sometimes we need  to  realloc  this  memory.   At  first
-   reallocating large blocks can be stucked cause system can has no large block.
-   It's looks like a big rocks in cup: you still a lot of free space  which  can
-   be filled, but you can't place one more big rock because it falling out  from
-   top of a hill.  After that to reallocate we need to say which size we want to
-   have after reallocation.  I don't believe what somebody will operate  numbers
-   larger than length can contain uint64, but it constraints  maximum  value  of
-   our number, so it isn't infinite...
+1. Store and operate in RAM
 
-2. Store  in multiple fixed-size blocks which becomes a  two-way  linked  lists.
-   This solves problem of big rocks in a  cup  and  constrained  maximum  stored
-   number. But it not so comfortable for storing as constant, this method little
-   slower because it requires linked list stepping.
+2. Store and operate in ROM in file
 
-In any case access to storage memory must be written as module or layer. I think
-second way more perspective and can be optimized and i choose it.
+3. Store and operate in ROM in raw array
+
+4. Operate at microcontroller with equal or less 32bit word length and
+   addressing
+
+Iterative stream covers these requirements.  I think we need an fopen-,  fread-,
+fwrite-like interface. It means what we will operate it as:
+
+1. read byte
+
+2. write byte (replace, insert, delete, etc...)
+
+3. set position (increment n, decrement n, first, last, search by data sequence,
+   etc...)
+
+4. create
+
+5. delete
+
+These functions don't contain any information  about  size.   Size  must  update
+dynamically and fit it's payload. Insertion must extend used memory and deleting
+must free used memory and additional modiry current position if it needed.  
+
+Read or write action operates stored  data  and  renew  current  pointer.   This
+mechanism can be applied for access in any cases which we can  imagine  even  in
+network applications. But for proof of concept we will use simple array in RAM
+and adapter to it.
 
 And first problem we need to solve how to set decimal string  into  binary.   In
 common case recursively divide number by 2 and store carry.
