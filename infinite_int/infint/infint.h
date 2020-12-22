@@ -1,12 +1,72 @@
 #ifndef INFINT_H
 #define INFINT_H
 
-/** \brief settings for infinite int */
-typedef struct //infint_settings_t
-{ void* (*alloc  )(size_t s          ); ///< define memory allocator function
-  void* (*realloc)(void*  p, size_t s); ///< define memory reallocation function
-  void  (*free   )(void*  p          ); ///< define memory free_function
-} infint_settings_t;
+/** \brief position in data stream */
+typedef enum //infint_mem_pos_t
+{ INFINT_MEM_POS__START = 0, ///< start of data stream
+  INFINT_MEM_POS__CURRENT,   ///< current position in data stream
+  INFINT_MEM_POS__END        ///< end of data stream
+} infint_mem_pos_t;
+
+/** \brief behavour mode of write data stream operation */
+typedef enum //infint_wr_mode_t
+{ INFINT_WR_MODE__INSERT = 0, ///< insertion
+  INFINT_WR_MODE__REPLACE     ///< replacement
+} infint_wr_mode_t;
+
+typedef struct //infint_mem_settings_t
+{ /** \brief   read n bytes from memory by current position
+    * \details mechanism must be similar to file stream
+    * \param   ptr  pointer to data buffer
+    * \param   len  size in bytes which volume of data must be readen
+    * \param   id   identifier of data stream
+    * \return  error or bytes readen 
+    * \retval  -1   error occured due execution
+    * \retval  >= 0 num of readen bytes */
+  int (*rd)(void* ptr, unsigned int len, unsigned int id);
+  /** \breif   write n bytes to memory from current position
+   *  \details memory must be automatically extended if you write at the end in 
+   *           any mode, or in any position in inset mode 
+   *  \param   ptr  pointer to data buffer
+   *  \param   len  size in bytes which volume of data must be written
+   *  \param   mode write mode
+   *  \param   id   identifier of data stream
+   *  \return  error or bytes written
+   *  \retval  -1   error occured due execution
+   *  \retval  >= 0 num of written bytes */
+  int (*wr)(void* ptr, unsigned int len, infint_wr_mode_t mode, 
+            unsigned int id);
+  /** \brief   remove block of memory from data stream
+   *  \details removal zone starts from current position to n bytes towards
+   *  \param   len size in bytes which volume must be removed
+   *  \param   id  identifier of data stream
+   *  \return  error or bytes removed
+   *  \retval  -1   error occured due execution
+   *  \retval  >= 0 num of removed bytes */
+  int (*rm)(int len, int id);
+  /** \brief   change position in data stream
+   *  \details set position in stream by settings in arguments. you can change
+   *           position in num of bytes towards or backwards of current
+   *           position, start of data stream, end of data stream
+   *  \param   pos   position marker
+   *  \param   shift shift in bytes (may be 0 or negative number)
+   *  \param   id    identifier of data stream
+   *  \return  error
+   *  \retval  -1    error occured due execution
+   *  \retval  0     success */
+  int (*pos)(infint_mem_pos_t pos, int shift, unsigned int id);
+  /** \brief creates new data stream
+   *  \return identifier or error
+   *  \retval 0  error occured due execution or can't get memory
+   *  \retval >0 valid identifier of data stream */
+  unsigned int (*crt)(void);
+  /** \brief  deletes data stream
+   *  \param  id identifier
+   *  \return error
+   *  \retval -1 error occured due execution
+   *  \retval 0  success */
+  int (*del)(int id);
+} infint_mem_settings_t;
 
 /** \brief public fields of class infinite int */
 typedef struct //infint_t
@@ -42,12 +102,12 @@ typedef struct //infint_t
    *  \retval  0  all ok
    *  \retval  -1 error */
   int               (*destroy)(void* _this             );
-  /** \brief   settings of this number
-   *  \setails in most contains settings which could be defined as global, but
-   *           IMHO it is a bad idea because i don't wanna chain your hands
-   *           with global variables of define macro because it can break your
-   *           existing code */
-  infint_settings_t settings;
+  /** \brief   memory settings of this number
+   *  \details you must manually define this structure according to
+   *           specification below. This interface is architecture independent
+   *           so you can port it on any machine and any OS which your compiler
+   *           applies */
+  infint_mem_settings_t settings;
 } infint_t;
 
 /** \brief private fields of class infinite int */
