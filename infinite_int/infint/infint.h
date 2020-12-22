@@ -34,8 +34,7 @@ typedef struct //infint_mem_settings_t
    *  \return  error or bytes written
    *  \retval  -1   error occured due execution
    *  \retval  >= 0 num of written bytes */
-  int (*wr)(void* ptr, unsigned int len, infint_wr_mode_t mode, 
-            unsigned int id);
+  int (*wr)(void* ptr, unsigned int len, int mode, unsigned int id);
   /** \brief   remove block of memory from data stream
    *  \details removal zone starts from current position to n bytes towards
    *  \param   len size in bytes which volume must be removed
@@ -54,7 +53,7 @@ typedef struct //infint_mem_settings_t
    *  \return  error
    *  \retval  -1    error occured due execution
    *  \retval  0     success */
-  int (*pos)(infint_mem_pos_t pos, int shift, unsigned int id);
+  int (*pos)(int pos, int shift, unsigned int id);
   /** \brief creates new data stream
    *  \return identifier or error
    *  \retval 0  error occured due execution or can't get memory
