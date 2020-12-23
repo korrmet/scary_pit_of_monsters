@@ -5,7 +5,7 @@ TESTS += infint_parse_bin
 #uncomment it to see debug output
 #DEFINES += INFINT_PRINTF printf
 
-all: $(TESTS)
+all: data_streamer $(TESTS)
 
 .PHONY: clean
 
@@ -13,6 +13,12 @@ all: $(TESTS)
 	@echo $@
 	@mkdir -p tests/bin
 	@gcc tests/$@.c -I/ $(DEFINES) -g -o tests/bin/$@
+	@./tests/bin/$@
+
+data_streamer:
+	@echo $@
+	@mkdir -p tests/bin
+	@gcc tests/data_streamer.c tests/data_streamer_test.c -g -o tests/bin/$@
 	@./tests/bin/$@
 
 clean:

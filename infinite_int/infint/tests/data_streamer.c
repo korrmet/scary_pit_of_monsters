@@ -14,6 +14,7 @@ int rd(void* ptr, unsigned int len, unsigned int id)
   if (id < 1)               { return -1; } id--;
   if (id > MAX_STREAMS_NUM) { return -1; }
 
+  char* _ptr    = (char*)ptr;
   char* current = (char*)streams_pool[id].current;
   char* start   = (char*)streams_pool[id].start;
   char* end     = (char*)streams_pool[id].end;
@@ -22,7 +23,7 @@ int rd(void* ptr, unsigned int len, unsigned int id)
   int readen = 0;
   for (int i = 0; i < len; i++)
   { if (current > end) { break; }
-    *ptr = *current; ptr++; current++; readen++; }
+    *_ptr = *current; _ptr++; current++; readen++; }
 
   return readen; }
 
@@ -129,9 +130,9 @@ unsigned int crt(void)
   return 0; }
 
 int del(int id)
-{ if (id < 1)                             { return -1; } id--;
-  if (id > MAX_STREAMS_NUM)               { return -1; }
-  if (streams_pool[id - 1].start == NULL) { return -1; }
+{ if (id < 1)                         { return -1; } id--;
+  if (id > MAX_STREAMS_NUM)           { return -1; }
+  if (streams_pool[id].start == NULL) { return -1; }
   
   free(streams_pool[id].start); 
   streams_pool[id].current = NULL; streams_pool[id].end     = NULL;
