@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include "data_streamer.h"
@@ -11,8 +12,9 @@ stream_t streams_pool[MAX_STREAMS_NUM] = {};
 
 int rd(void* ptr, unsigned int len, unsigned int id) 
 { if (ptr == NULL)          { return -1; }
-  if (id < 1)               { return -1; } id--;
+  if (id < 1)               { return -1; }
   if (id > MAX_STREAMS_NUM) { return -1; }
+  id--;
 
   char* _ptr    = (char*)ptr;
   char* current = (char*)streams_pool[id].current;
@@ -30,8 +32,10 @@ int rd(void* ptr, unsigned int len, unsigned int id)
 int wr(void* ptr, unsigned int len, int mode, unsigned int id)
 { if (ptr == NULL)                    { return -1; }
   if (mode > STREAM_WR_MODE__REPLACE) { return -1; }
-  if (id < 1)                         { return -1; } id--;
+  if (id < 1)                         { return -1; }
   if (id > MAX_STREAMS_NUM)           { return -1; } 
+  id--;
+  if (streams_pool[id].start == NULL) { return -1; }
 
   switch (mode)
   { case STREAM_WR_MODE__INSERT: 
@@ -71,8 +75,9 @@ int wr(void* ptr, unsigned int len, int mode, unsigned int id)
   return len; }
 
 int rm(int len, int id)
-{ if (id < 1)               { return -1; } id--;
+{ if (id < 1)               { return -1; }
   if (id > MAX_STREAMS_NUM) { return -1; }
+  id--;
 
   if (streams_pool[id].current + len > streams_pool[id].end)
   { len = streams_pool[id].end - streams_pool[id].current; }
@@ -98,8 +103,9 @@ int rm(int len, int id)
   return 0; }
 
 int pos(int pos, int shift, unsigned int id)
-{ if (id < 1)               { return -1; } id--;
+{ if (id < 1)               { return -1; }
   if (id > MAX_STREAMS_NUM) { return -1; }
+  id--;
   
   switch (pos)
   { case STREAM_MEM_POS__START: 
@@ -130,11 +136,12 @@ unsigned int crt(void)
   return 0; }
 
 int del(int id)
-{ if (id < 1)                         { return -1; } id--;
-  if (id > MAX_STREAMS_NUM)           { return -1; }
+{ if (id < 1)                         { return -1; } 
+  if (id > MAX_STREAMS_NUM)           { return -1; } 
+  id--;
   if (streams_pool[id].start == NULL) { return -1; }
   
-  free(streams_pool[id].start); 
+  free(streams_pool[id].start);    streams_pool[id].start   = NULL;
   streams_pool[id].current = NULL; streams_pool[id].end     = NULL;
   
   return 0; }

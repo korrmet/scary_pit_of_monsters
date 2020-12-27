@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdint.h>
 #include "data_streamer.h"
 
 int main(void)
@@ -13,10 +14,44 @@ int main(void)
   if (del(0) < 0) { passed_counter++; } else { printf("fail\n"); }
 
   printf("-->delete too high id\n"); tests_counter++;
-  if (del(MAX_STREAMS_NUM) < 0) { passed_counter++; } else { printf("fail\n"); }
+  if (del(MAX_STREAMS_NUM + 1) < 0) 
+  { passed_counter++; } else { printf("fail\n"); }
 
   printf("-->delete uncreated id\n"); tests_counter++;
   if (del(created + 1) < 0) { passed_counter++; } else { printf("fail\n"); }
+  
+  printf("-->write by NULL pointer\n"); tests_counter++;
+  if (wr(NULL, 0, STREAM_WR_MODE__INSERT, created) >= 0)
+  { printf("fail\n"); } else { passed_counter++; }
+
+  printf("-->write undefined mode\n"); tests_counter++;
+  { uint32_t sample = 0x12345678;
+    if (wr(&sample, sizeof(sample), 2, created) > 0)
+    { printf("fail\n"); } else { passed_counter++; } }
+
+  printf("-->write uncreated id\n"); tests_counter++;
+  { uint32_t sample = 0x12345678;
+    if (wr(&sample, sizeof(sample), STREAM_WR_MODE__INSERT, created + 1) >= 0)
+    { printf("fail\n"); } else { passed_counter++; } }
+
+  printf("-->simple write\n"); tests_counter++;
+  { uint32_t sample = 0x12345678;
+    int res = wr(&sample, sizeof(sample), STREAM_WR_MODE__INSERT, created);
+    if (res < 0) { printf("false error result\n"); }
+    else if (res != sizeof(sample)) { printf("incorrect written byte num\n"); }
+    else { passed_counter++; } }
+  
+  printf("-->simple change position\n"); tests_counter++;
+  if (pos(STREAM_MEM_POS__START, 0, created) < 0)
+  { printf("fail\n"); } else { passed_counter++; }
+
+  printf("-->simple read\n"); tests_counter++;
+  { uint32_t sample = 0;
+    int res = rd(&sample, sizeof(sample), created);
+    if (res < 0) { printf("false error result\n"); }
+    else if (res != sizeof(sample)) { printf("incorrect readen byte num\n"); }
+    else if (sample != 0x12345678)  { printf("readen wrong data\n"); }
+    else { passed_counter++; } }
 
   printf("-->simple delete\n"); tests_counter++;
   if (del(created) < 0) { printf("fail\n"); } else { passed_counter++; } 
