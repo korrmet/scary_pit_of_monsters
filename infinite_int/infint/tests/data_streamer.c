@@ -103,9 +103,10 @@ int rm(int len, int id)
   return 0; }
 
 int pos(int pos, int shift, unsigned int id)
-{ if (id < 1)               { return -1; }
-  if (id > MAX_STREAMS_NUM) { return -1; }
+{ if (id < 1)                         { return -1; }
+  if (id > MAX_STREAMS_NUM)           { return -1; }
   id--;
+  if (streams_pool[id].start == NULL) { return -1; }
   
   switch (pos)
   { case STREAM_MEM_POS__START: 

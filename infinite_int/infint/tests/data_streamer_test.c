@@ -41,6 +41,13 @@ int main(void)
     else if (res != sizeof(sample)) { printf("incorrect written byte num\n"); }
     else { passed_counter++; } }
   
+  printf("-->change position incorrect point\n"); tests_counter++;
+  if (pos(3, 0, created) >= 0) { printf("fail\n"); } else { passed_counter++; }
+
+  printf("-->change position too high id\n"); tests_counter++;
+  if (pos(STREAM_MEM_POS__START, 0, MAX_STREAMS_NUM + 1) >= 0)
+  { printf("fail\n"); } else { passed_counter++; }
+
   printf("-->simple change position\n"); tests_counter++;
   if (pos(STREAM_MEM_POS__START, 0, created) < 0)
   { printf("fail\n"); } else { passed_counter++; }
