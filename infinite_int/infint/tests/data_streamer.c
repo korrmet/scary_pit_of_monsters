@@ -46,9 +46,13 @@ int wr(void* ptr, unsigned int len, int mode, unsigned int id)
       char* new_current = new_start + (streams_pool[id].current - 
                                        streams_pool[id].start);
       
+      //copy old data defore insertion
       memcpy(new_start, streams_pool[id].start, new_current - new_start);
+
+      //copy old data after insertion
       char* insertion_end = new_current + len;
-      memcpy(insertion_end, streams_pool[id].current, len);
+      memcpy(insertion_end, streams_pool[id].current, streams_pool[id].end -
+                                                      streams_pool[id].current);
 
       free(streams_pool[id].start);
       streams_pool[id].start   = (void*)new_start;
@@ -57,12 +61,13 @@ int wr(void* ptr, unsigned int len, int mode, unsigned int id)
     } break;
     case STREAM_WR_MODE__REPLACE: 
     { if (streams_pool[id].current + len > streams_pool[id].end)
-      { void* new_start = 
+      { char* new_start = 
           realloc(streams_pool[id].start,
-                  streams_pool[id].current - streams_pool[id].start + len); 
-        void* new_current = new_start + (streams_pool[id].current -
-                                         streams_pool[id].end);
-        void* new_end     = new_current + len; 
+                  streams_pool[id].current - streams_pool[id].start + len);
+        if (new_start == NULL) { return -1; } 
+        char* new_current = new_start + (streams_pool[id].current -
+                                         streams_pool[id].start);
+        char* new_end     = new_current + len; 
       
         streams_pool[id].start   = new_start;
         streams_pool[id].current = new_current;

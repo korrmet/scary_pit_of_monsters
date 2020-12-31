@@ -74,7 +74,7 @@ int main(void)
     if (res < 0)
     { printf("can't read from stream\n"); fail = 1; }
     else if (res != 8)
-    { printf("incorrect bytes num readen\n"); fail = 1; }
+    { printf("incorrect bytes num readen (%d)\n", res); fail = 1; }
     uint32_t expected[2] = { 0xdeadbeef, 0x12345678 }; 
     if (memcmp(readen, expected, 8) != 0)
     { printf("readen unexpected data\n"); 
@@ -97,7 +97,8 @@ int main(void)
     { printf("can't move positon in stream\n"); fail = 1; }
     uint8_t readen[9] = {}; int res = rd(readen, sizeof(readen), created);
     if (res < 0) { printf("can't read from stream\n"); fail = 1; }
-    else if (res != 8) { printf("incorrect bytes num readen\n"); fail = 1; }
+    else if (res != 9) { printf("incorrect bytes num readen (%d)\n", res); 
+      fail = 1; }
     uint8_t expected[9] = 
       { 0xef, 0xbe, 0xad, 0xaa, 0xde, 0x78, 0x56, 0x34, 0x12 };
     if (memcmp(readen, expected, 9) != 0)
@@ -106,6 +107,31 @@ int main(void)
       for (int i = 0; i < 9; i++) { printf("%02x", expected[i]); } printf("\n");
       printf("  readen:   ");
       for (int i = 0; i < 9; i++) { printf("%02x", readen[i]); } printf("\n");
+      fail = 1; }
+    if (!fail) { passed_counter++; } }
+
+  printf("-->simple replace in end\n"); tests_counter++;
+  { int fail = 0;
+    if (pos(STREAM_MEM_POS__END, 0, created) < 0)
+    { printf("can't move position in stream\n"); fail = 1; }
+    uint8_t sample = 0x55;
+    if (wr(&sample, sizeof(sample), STREAM_WR_MODE__REPLACE, created) < 0)
+    { printf("can't write in stream\n"); fail = 1; }
+    if (pos(STREAM_MEM_POS__START, 0, created) < 0)
+    { printf("can't move position in stream\n"); fail = 1; }
+    uint8_t readen[10] = {}; int res = rd(readen, sizeof(readen), created);
+    if (res < 0) { printf("can't read from stream\n"); fail = 1; }
+    else if (res != 10) { printf("incorrect bytes num readen (%d)\n", res); 
+      fail = 1; }
+    uint8_t expected[10] = 
+      { 0xef, 0xbe, 0xad, 0xaa, 0xde, 0x78, 0x56, 0x34, 0x12, 0x55 };
+    if (memcmp(readen, expected, 10) != 0)
+    { printf("readen incorrect data\n");
+      printf("  expected: ");
+      for (int i = 0; i < 10; i++) 
+      { printf("%02x", expected[i]); } printf("\n");
+      printf("  readen:   ");
+      for (int i = 0; i < 10; i++) { printf("%02x", readen[i]); } printf("\n");
       fail = 1; }
     if (!fail) { passed_counter++; } }
 
