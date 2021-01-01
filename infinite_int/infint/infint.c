@@ -37,7 +37,7 @@
 #endif
 ///\}
 
-#define INFINT_ESCAPE_SYMBOL '\\'
+#define THIS ((infint_class_t*)_this)
 
 /** \brief   parse string with binary number
  *  \details string will be parset till zero-terminator. spaces will be ignored
@@ -86,6 +86,17 @@ int   infint_set    (void* _this, char* str  )
 { if (_this == NULL) { perr("NULL _this arg\n"); return -1; }
   if (str   == NULL) { perr("NULL str arg\n");   return -1; }
   
+  if (THIS->_private.id == 0) 
+  { if (THIS->_public.settings.crt)
+    { THIS->_private.id = THIS->_public.settings.crt(); } 
+    else 
+    { perr("(%08x) can't get memory cause data stream creator is not set\n", 
+           _this); 
+      return -1; }
+    
+    if (THIS->_private.id == 0) 
+    { perr("(%08x) can't create data stream\n", _this); return -1; } }
+
   int minus = 0; if (*str == '-') { minus = 1; str++; }
 
   enum { BIN = 0, OCT = 1, DEC = 2, HEX = 3 } num_type;
@@ -104,8 +115,8 @@ int   infint_set    (void* _this, char* str  )
                          case '9': num_type = OCT;        break;
                          case 'b': num_type = BIN; str++; break;
                          default: 
-                         { perr("(%08x) unexpected type qualifier %d\n", 
-                                _this, *str); 
+                         { perr("(%08x) unexpected type qualifier '%c'(%d)\n", 
+                                _this, *str, *str); 
                            return -1; } } 
               } break;
     case '1':
@@ -240,10 +251,6 @@ int infint_is_in_alphabet(char sym, char* alphabet, int length)
 char infint_skip_symbols[INFINT_SKIP_SYMBOLS_LEN]
 = { ' ', '\t' };
 
-#define INFINT_SPECIAL_SYMBOLS_LEN 2
-char infint_special_symbols[INFINT_SPECIAL_SYMBOLS_LEN]
-= { 0, INFINT_ESCAPE_SYMBOL };
-
 #define INFINT_BIN_ALPHABET_LEN 2
 char infint_bin_alphabet[INFINT_BIN_ALPHABET_LEN] 
 = { '0', '1' };
@@ -292,39 +299,6 @@ int infint_parse_bin(void* _this, char* str)
 
   infint_validate(str, infint_bin_alphabet, INFINT_BIN_ALPHABET_LEN,
                        infint_skip_symbols, INFINT_SKIP_SYMBOLS_LEN);
-
-  uint8_t* mem = (uint8_t*)((infint_class_t*)_this)->_private.mem;
-  int byte_ctr = 0;
-  while (*str != 0)
-  { if (infint_is_in_alphabet(*str, 
-                              infint_skip_symbols, 
-                              INFINT_SKIP_SYMBOLS_LEN) == 1)
-    { str++; continue; }
-    switch (*str)
-    { case '0': *mem &= ~(1 << (7 - byte_ctr)); break;
-      case '1': *mem |=   1 << (7 - byte_ctr);  break;
-      default: perr("unexpected symbol \'%c\'\n", *str); return -1; }
-    byte_ctr++; if (byte_ctr >= 8) { byte_ctr = 0; mem++; } str++; }
-
-  //changing byte order
-  uint8_t* mem_start = (uint8_t*)((infint_class_t*)_this)->_private.mem;
-  uint8_t* mem_end   = mem - 1; //previous is real last member
-  while (mem_start < mem_end)
-  { uint8_t tmp; tmp = *mem_start; *mem_start = *mem_end; *mem_end = tmp;
-    mem_start++; mem_end--; }
-
-  //add escape-symbols if it needed in result
-  uint8_t* current = (uint8_t*)((infint_class_t*)_this)->_private.mem;
-  mem_end   = mem;
-  while (current < mem_end)
-  { switch (infint_is_in_alphabet(*current,
-                                  infint_special_symbols,
-                                  INFINT_SPECIAL_SYMBOLS_LEN))
-    { case 0: break;
-      case 1: /* TODO: think about how to insert symbol in memory */ break;
-      default: perr("can't parse symbol during escape-symbols adding\n"); 
-               return -1; } 
-    current++; }
 
   return 0; }
 

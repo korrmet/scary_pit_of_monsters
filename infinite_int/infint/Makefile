@@ -11,10 +11,15 @@ all: data_streamer $(TESTS)
 
 .PHONY: clean
 
+tags: 
+	@cscope -bRkf cscope.out
+	@ctags -R
+	@echo "-I ./" > .clang
+
 %: tests/%.c
 	@echo $@
 	@mkdir -p tests/bin
-	@gcc tests/$@.c -I/ $(DEFINES) $(DBG) -o tests/bin/$@
+	@gcc tests/data_streamer.c tests/$@.c -I/ $(DEFINES) $(DBG) -o tests/bin/$@
 	@./tests/bin/$@
 
 data_streamer:
@@ -24,4 +29,4 @@ data_streamer:
 	@./tests/bin/$@
 
 clean:
-	@rm -rf ./tests/bin
+	@rm -rf ./tests/bin cscope.out tags .clang
