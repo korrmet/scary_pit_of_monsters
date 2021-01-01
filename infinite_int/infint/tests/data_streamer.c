@@ -141,7 +141,7 @@ unsigned int crt(void)
       return ++i; } } 
   return 0; }
 
-int del(int id)
+int del(unsigned int id)
 { if (id < 1)                         { return -1; } 
   if (id > MAX_STREAMS_NUM)           { return -1; } 
   id--;
