@@ -64,7 +64,7 @@ typedef struct //infint_mem_settings_t
    *  \return error
    *  \retval -1 error occured due execution
    *  \retval 0  success */
-  int (*del)(int id);
+  int (*del)(unsigned int id);
 } infint_mem_settings_t;
 
 /** \brief public fields of class infinite int */
@@ -111,13 +111,8 @@ typedef struct //infint_t
 
 /** \brief private fields of class infinite int */
 typedef struct //infint_private_t
-{ void* mem;  ///< pointer to memory which contains int data
-  int   size; /**< size of memory in bytes
-                   \note this is reason why at present day i laid about infinity
-                         of this int. actually it is almost infinity, but i can
-                         fix it later. it's just concept isn't it? */
-  void* str;  ///< string of symbols which represent contained value
-  void* flg;  ///< string of flags last requested
+{ unsigned int id; ///< identifier of data stream which contains data of number
+  char* str;       ///< string of symbols which represent contained value
 } infint_private_t;
 
 typedef struct //infint_class_t
