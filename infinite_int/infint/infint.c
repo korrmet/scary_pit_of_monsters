@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "infint.h"
+#include "tests/data_streamer.h"
 
 #ifndef INFINT_WORDLEN
 #define INFINT_WORDLEN 1
@@ -299,6 +300,23 @@ int infint_parse_bin(void* _this, char* str)
 
   infint_validate(str, infint_bin_alphabet, INFINT_BIN_ALPHABET_LEN,
                        infint_skip_symbols, INFINT_SKIP_SYMBOLS_LEN);
+  
+  int char_ctr = 0; unsigned int id = THIS->_private.id;
+  infint_mem_settings_t* mem = &THIS->_public.settings;
+  uint8_t buffer = 0;
+  while (*str != 0)
+  { switch (*str)
+    { case '0': buffer &= 0xFE; break;
+      case '1': buffer |= 0x01; break; 
+      default: str++; continue; }
+    buffer <<= 1;
+  
+  char_ctr++; 
+  if (char_ctr > 8) 
+  { mem->wr(&buffer, 1, STREAM_WR_MODE__INSERT, id); 
+    buffer = 0; char_ctr = 0; } 
+  
+  str++; }
 
   return 0; }
 
