@@ -1,3 +1,15 @@
+# licence
+
+I'm not sure what somebody really will use it, but don't forget in any case tell
+or write what main source of this is me, Korrmet, and at present day any person
+can see it at github.com/korrmet. If you ignore this term you're an asshole.
+
+
+# language
+i'm sooooooo sorry by my English (actually not because it's just part of practice).
+Someday i fix mistakes in description (actually not because code is more important
+and i dont have time for it)
+
 # scary\_pit\_of\_monsters
 
 ![kenny](https://github.com/korrmet/scary_pit_of_monsters/raw/main/kenny_cheesing.gif)
