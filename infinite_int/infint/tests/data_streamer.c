@@ -18,9 +18,7 @@ int rd(void* ptr, unsigned int len, unsigned int id)
 
   char* _ptr    = (char*)ptr;
   char* current = (char*)streams_pool[id].current;
-  char* start   = (char*)streams_pool[id].start;
   char* end     = (char*)streams_pool[id].end;
-  char* buf     = (char*)ptr;
 
   int readen = 0;
   for (int i = 0; i < len; i++)

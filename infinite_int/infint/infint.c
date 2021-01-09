@@ -98,8 +98,6 @@ int   infint_set    (void* _this, char* str  )
     if (THIS->_private.id == 0) 
     { perr("(%08x) can't create data stream\n", _this); return -1; } }
 
-  int minus = 0; if (*str == '-') { minus = 1; str++; }
-
   enum { BIN = 0, OCT = 1, DEC = 2, HEX = 3 } num_type;
   switch (*str)
   { case '0': { str++; switch(*str)

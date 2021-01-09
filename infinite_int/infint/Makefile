@@ -19,7 +19,8 @@ tags:
 %: tests/%.c
 	@echo $@
 	@mkdir -p tests/bin
-	@gcc tests/data_streamer.c tests/$@.c -I/ $(DEFINES) $(DBG) -o tests/bin/$@
+	@gcc tests/data_streamer.c tests/$@.c -I/ $(DEFINES) $(DBG) -Wall \
+		    -o tests/bin/$@
 	@./tests/bin/$@
 
 data_streamer:
