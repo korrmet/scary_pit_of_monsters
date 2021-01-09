@@ -28,11 +28,16 @@ int main(void)
   printf("-->examine memory after parsing\n"); tests_counter++;
   { int fail = 0;
     uint8_t buf[80] = {}; int size = 0;
+
+    if (pos(STREAM_MEM_POS__START, 0, test__class._private.id) < 0)
+    { printf("fail, can't change position to start\n"); fail = 1; }
+
     size = rd(buf, sizeof(buf), test__class._private.id);
     if (size < 0) { printf("fail, incorrect reading\n"); fail = 1; }
     if (size != 3) 
     { printf("fail, wrong size of data readen (%d, must be 3)\n", size); 
       fail = 1; }
+
     if (buf[0] != 0xAA || buf[1] != 0xFF || buf[2] != 0x3C)
     { printf("fail, unexpcted result\n");
       printf("must be: AA FF 3C\n");

@@ -307,14 +307,13 @@ int infint_parse_bin(void* _this, char* str)
     { case '0': buffer &= 0xFE; break;
       case '1': buffer |= 0x01; break; 
       default: str++; continue; }
-    buffer <<= 1;
-  
-  char_ctr++; 
-  if (char_ctr > 8) 
-  { mem->wr(&buffer, 1, STREAM_WR_MODE__INSERT, id); 
-    buffer = 0; char_ctr = 0; } 
-  
-  str++; }
+    buffer = buffer << 1; char_ctr++; 
+
+    if (char_ctr > 8) 
+    { mem->wr(&buffer, 1, STREAM_WR_MODE__INSERT, id); 
+      buffer = 0; char_ctr = 0; } 
+    
+    str++; }
 
   return 0; }
 
