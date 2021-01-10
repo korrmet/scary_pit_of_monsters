@@ -8,7 +8,6 @@
 #include "data_streamer.h"
 
 NEW(infint, test);
-uint8_t array[10] = {};
 
 int main(void)
 { int result = 0; int tests_counter = 0; int passed_counter = 0;

@@ -304,16 +304,13 @@ int infint_parse_bin(void* _this, char* str)
   uint8_t buffer = 0;
   while (*str != 0)
   { switch (*str)
-    { case '0': buffer &= 0xFE; break;
-      case '1': buffer |= 0x01; break; 
-      default: str++; continue; }
-    buffer = buffer << 1; char_ctr++; 
+    { case '0': buffer <<= 1; buffer &= 0xFE; char_ctr++; str++; break;
+      case '1': buffer <<= 1; buffer |= 0x01; char_ctr++; str++; break; 
+      default:                                            str++; continue; }
 
-    if (char_ctr > 8) 
+    if (char_ctr > 7) 
     { mem->wr(&buffer, 1, STREAM_WR_MODE__INSERT, id); 
-      buffer = 0; char_ctr = 0; } 
-    
-    str++; }
+      buffer = 0; char_ctr = 0; } }
 
   return 0; }
 
