@@ -612,44 +612,59 @@ b%e)==0)printf("\x1B[%dm ",g*g>1-h
              ,-n:n;}}
 ```
 
-Copy and paste it in main.c and compile with a command `gcc main.c`. After that
-start it using terminal emulator which apply VT100 sequences and  you  will  see
-beautiful dynamic ASCII-art - white and red ball bouncing in  front  of  a  gray
-wall.
+Copy and paste it in main.c and compile with a command `gcc -lm  -ansi  main.c`.
+After that start it using terminal emulator which apply VT100 sequences and  you
+will see beautiful dynamic ASCII-art - white and red ball bouncing in  front  of
+a gray wall.
 
 But hard to understand how...  One  of  reasons  is  formatting.   There  is  no
 formatting.
 
 ```
-#include <stdio.h>
 #include <math.h>
-#include <unistd.h>
+#include <stdio.h>
 #include <sys/ioctl.h>
+#include <unistd.h>
 
-main() 
-{ short a[4];
-  ioctl (0,TIOCGWINSZ,&a);
-  int b,c,d=*a,e=a[1];
-  float f,g, h,i=d/2+d%2+1,j=d/5-1,k=0,l=e/ 2,m=d/4,n=.01*e,o=0,p=.1;
-  while ( printf("\x1b[H\x1B[?25l"),!usleep( 79383))
-  { for ( b=c=0;
-          h=2*(m-c)/i,f=- .3*(g=(l-b)/i)+.954*h,c<d;
-          c+=(b=++ b%e)==0)
-    printf("\x1B[%dm ",
-      g*g>1-h*h ? c>d-j 
-                  ? b<d-c || d-c>e-b 
-                    ? 40 : 
-                      100 
-                  : b < j || b > e-j 
-                ? 40 : 
-                  g*(g+.6)+.09+h*h<1 ? 100 : 47 
-                : ((int)(9-k+(.954*g+.3*h)/sqrt (1-f*f))+(int)(2+f*2))%2==0 
-                  ? 107 : 101);
-  k+=p,m+=o,o=m>d-2*j ?  -.04*d : o+.002*d;
-  n=(l+= n)<i||l>e-i ? p = -p ,-n : n; } }
+main() {
+  short a[4];
+  ioctl(0, TIOCGWINSZ, &a);
+  int b, c, d = *a, e = a[1];
+  float f, g, h, i = d / 2 + d % 2 + 1, j = d / 5 - 1, k = 0, l = e / 2,
+                 m = d / 4, n = .01 * e, o = 0, p = .1;
+  while (printf("\x1b[H\x1B[?25l"), !usleep(79383)) {
+    for (b = c = 0;
+         h = 2 * (m - c) / i, f = -.3 * (g = (l - b) / i) + .954 * h, c < d;
+         c += (b = ++b % e) == 0)
+      printf("\x1B[%dm ",
+             g * g > 1 - h * h ? c > d - j
+                                     ? b < d - c || d - c > e - b ? 40 : 100
+                                 : b < j || b > e - j             ? 40
+                                 : g * (g + .6) + .09 + h * h < 1 ? 100
+                                                                  : 47
+             : ((int)(9 - k + (.954 * g + .3 * h) / sqrt(1 - f * f)) +
+                (int)(2 + f * 2)) %
+                         2 ==
+                     0
+                 ? 107
+                 : 101);
+    k += p, m += o, o = m > d - 2 * j ? -.04 * d : o + .002 * d;
+    n = (l += n) < i || l > e - i ? p = -p, -n : n;
+  }
+}
 ```
 
-looks better, but isn't fine.
+looks better, but isn't fine.  Next stop will be at using '?  :' operators.  But
+now talk about how reach same effect.  I prefer to format code manually  because
+i read code many times and often i'm have some ideas while i'm doing that.   But
+today i used clang-formatter.  Manual formatting can produce some errors.  Don't
+forget chech out what program works correctly in  any  case  especially  if  you
+trying to do something manually. Also exists program called deobfuscators. It's
+more complex programs and they also can delete  some  junk  code,  replace  some
+constructions with more readable, etc.  I don't talk about it because i  haven't
+money for this.
+
+## Example 2: condition operator hell
 
 # Epilogue
 
