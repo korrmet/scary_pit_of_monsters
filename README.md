@@ -549,6 +549,96 @@ step of division.  For it we can use standard computer arithmetics  and  1  byte
 operations will enough. As we have maximum operating value as 18 and it contains
 2 digits, we can scan input string by 1 or 2 characters per iteration.
 
+## what if code of another people is actually obfuscated...
+
+![unseen](https://github.com/korrmet/scary_pit_of_monsters/raw/main/unseen.jpg)
+
+As known work with code of another people is harder  than  work  with  code  you
+implement yourself.  In normal situations this diffirence is not critical but in
+real life you can see some people who becomes a source of unsupportable code.
+
+I define these people for categories:
+- newbie,
+- fixes quick everything,
+- trying to use language at 120 percents in any case even if it's no needed,
+- proving his importance any method.
+
+I think your opinion is similar, maybe you have some additional categories.  But
+it doesn't matter.  Really matters which kind of shittery they produce everyday.
+For example we will take a look on a ioccc winners.  They are not  assholes  and
+thy produce piece of art but distance between art and shit so close today.
+
+## Example 1: unformatting
+
+I know what may people talks what i have no format.  Actually i have.  Check out
+eastman's ball:
+
+
+```
+#include <stdio.h>
+#include <math.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+
+             main() {
+         short a[4];ioctl
+      (0,TIOCGWINSZ,&a);int
+    b,c,d=*a,e=a[1];float f,g,
+  h,i=d/2+d%2+1,j=d/5-1,k=0,l=e/
+ 2,m=d/4,n=.01*e,o=0,p=.1;while (
+printf("\x1b[H\x1B[?25l"),!usleep(
+79383)){for (b=c=0;h=2*(m-c)/i,f=-
+.3*(g=(l-b)/i)+.954*h,c<d;c+=(b=++
+b%e)==0)printf("\x1B[%dm ",g*g>1-h
+*h?c>d-j?b<d-c||d-c>e-b?40:100:b<j
+||b>e-j?40:g*(g+.6)+.09+h*h<1?100:
+ 47:((int)(9-k+(.954*g+.3*h)/sqrt
+  (1-f*f))+(int)(2+f*2))%2==0?107
+    :101);k+=p,m+=o,o=m>d-2*j?
+      -.04*d:o+.002*d;n=(l+=
+         n)<i||l>e-i?p=-p
+             ,-n:n;}}
+```
+
+Copy and paste it in main.c and compile with a command `gcc main.c`. After that
+start it using terminal emulator which apply VT100 sequences and  you  will  see
+beautiful dynamic ASCII-art - white and red ball bouncing in  front  of  a  gray
+wall.
+
+But hard to understand how...  One  of  reasons  is  formatting.   There  is  no
+formatting.
+
+```
+#include <stdio.h>
+#include <math.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+
+main() 
+{ short a[4];
+  ioctl (0,TIOCGWINSZ,&a);
+  int b,c,d=*a,e=a[1];
+  float f,g, h,i=d/2+d%2+1,j=d/5-1,k=0,l=e/ 2,m=d/4,n=.01*e,o=0,p=.1;
+  while ( printf("\x1b[H\x1B[?25l"),!usleep( 79383))
+  { for ( b=c=0;
+          h=2*(m-c)/i,f=- .3*(g=(l-b)/i)+.954*h,c<d;
+          c+=(b=++ b%e)==0)
+    printf("\x1B[%dm ",
+      g*g>1-h*h ? c>d-j 
+                  ? b<d-c || d-c>e-b 
+                    ? 40 : 
+                      100 
+                  : b < j || b > e-j 
+                ? 40 : 
+                  g*(g+.6)+.09+h*h<1 ? 100 : 47 
+                : ((int)(9-k+(.954*g+.3*h)/sqrt (1-f*f))+(int)(2+f*2))%2==0 
+                  ? 107 : 101);
+  k+=p,m+=o,o=m>d-2*j ?  -.04*d : o+.002*d;
+  n=(l+= n)<i||l>e-i ? p = -p ,-n : n; } }
+```
+
+looks better, but isn't fine.
+
 # Epilogue
 
 See you later when i add some more monsters in this pit and  convert  my  shitty
