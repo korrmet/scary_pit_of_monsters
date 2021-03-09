@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "infint.h"
+#include "tests/data_streamer.h"
 
 #ifndef INFINT_WORDLEN
 #define INFINT_WORDLEN 1
@@ -96,8 +97,6 @@ int   infint_set    (void* _this, char* str  )
     
     if (THIS->_private.id == 0) 
     { perr("(%08x) can't create data stream\n", _this); return -1; } }
-
-  int minus = 0; if (*str == '-') { minus = 1; str++; }
 
   enum { BIN = 0, OCT = 1, DEC = 2, HEX = 3 } num_type;
   switch (*str)
@@ -299,6 +298,19 @@ int infint_parse_bin(void* _this, char* str)
 
   infint_validate(str, infint_bin_alphabet, INFINT_BIN_ALPHABET_LEN,
                        infint_skip_symbols, INFINT_SKIP_SYMBOLS_LEN);
+  
+  int char_ctr = 0; unsigned int id = THIS->_private.id;
+  infint_mem_settings_t* mem = &THIS->_public.settings;
+  uint8_t buffer = 0;
+  while (*str != 0)
+  { switch (*str)
+    { case '0': buffer <<= 1; buffer &= 0xFE; char_ctr++; str++; break;
+      case '1': buffer <<= 1; buffer |= 0x01; char_ctr++; str++; break; 
+      default:                                            str++; continue; }
+
+    if (char_ctr > 7) 
+    { mem->wr(&buffer, 1, STREAM_WR_MODE__INSERT, id); 
+      buffer = 0; char_ctr = 0; } }
 
   return 0; }
 
