@@ -573,7 +573,7 @@ I define these people for categories:
 - newbie,
 - fixes quick everything,
 - trying to use language at 120 percents in any case even if it's no needed,
-- proving his importance any method.
+- proving his importance any method. (in text below self-prover)
 
 I think your opinion is similar, maybe you have some additional categories.  But
 it doesn't matter.  Really matters which kind of shittery they produce everyday.
@@ -620,7 +620,7 @@ a gray wall.
 But hard to understand how...  One  of  reasons  is  formatting.   There  is  no
 formatting.
 
-```
+```c
 #include <math.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
@@ -654,8 +654,63 @@ main() {
 }
 ```
 
-looks better, but isn't fine.  Next stop will be at using '?  :' operators.  But
-now talk about how reach same effect.  I prefer to format code manually  because
+looks better, but isn't fine. 
+
+### why?
+
+In real life you can see something as:
+
+```c
+int main(int argc, char** argv)
+{
+  foo();
+  bar();
+
+        if (something)
+        {
+if (something_else)
+{
+printf("aa\n");
+  printf("jjj\n");
+}
+  else
+  {
+printf("cc\n");
+      printf("string %d\n", __LINE__);
+}
+printf("bb\n\n");
+    
+      printf("lll\n\n\n");
+    }
+
+return 0;
+}
+```
+
+You can't explain where borders of if end else body  because  brackets  are  not
+enough for correct positioning in multiple strings.  Your mind uses some another
+ways to get position in structure of program like an idention.
+
+This code may be result of copypasting existing parts.  Novices and quick-fixers
+often do that but generally source of it are quick-fixers. 
+
+Also  you  can  see,  what  this   code   contains   many   printf   with   junk
+strings.  Quick-fixers often used something like that to debug  program  because
+often it's really easier than break break debugger in some place.  Developer  so
+hurried up so he can't imagine better name for his  debugging  output.   And  he
+decided not to remove this junk because it require so much time. 
+
+These behavour has some side effects which be displayed in next sections.  But i
+must told you now what just formatting may break program in  mind  of  developer
+which write this code. There used printf with line macro and developer will seek
+in programs output old line number. Also you can really break program because if
+earlier line number was 100  and  after  formatting  it  becomes  99  you  reach
+situation where debugging printf makes shorter output and it  can  produse  some
+side effect which can totally break application. 
+
+### how to defeat it?
+
+Now talk about how reach same effect.  I prefer to format code manually  because
 i read code many times and often i'm have some ideas while i'm doing that.   But
 today i used clang-formatter.  Manual formatting can produce some errors.  Don't
 forget chech out what program works correctly in  any  case  especially  if  you
@@ -664,7 +719,137 @@ more complex programs and they also can delete  some  junk  code,  replace  some
 constructions with more readable, etc.  I don't talk about it because i  haven't
 money for this.
 
-## Example 2: condition operator hell
+Will be cool if you try to recognize unformatted code in your mind before
+formatting. This practice force you to think like a compiler parser.
+
+```c
+int main(int argc, char** argv)
+{ foo(); bar();
+
+  if (something)
+  { if (something_else) { printf("aa\n"); printf("jjj\n"); }
+    else                { printf("cc\n"); printf("string %d\n", __LINE__); }
+    
+    printf("bb\n\n"); printf("lll\n\n\n"); }
+  
+  return 0; }
+```
+
+This is result of manual formatting and it looks better.
+
+## Example 2: undefined behavour so undefined
+
+Undefined behavour is not means only `i += ++i + ++i`. As i display above it may
+be result of almost anything.
+
+```c
+printf("            \r");
+```
+
+What do you think this statement doing? It prints some whitespaces which you can
+see and after that returns carriage in zero position. For user this code does
+makes no effect. So you decide to delete it because it's garbage and you will
+right. But after deleting you will see what program crashes.
+
+```c
+//void* wait_message(mailbox_t* mail)
+//void send_message(mailbox_t* mail, void* message) 
+mailbox_t mailbox;
+
+int some_func(void) { do_something_important(); return 1; }
+
+void thread1(void)
+{ int (*func_p)(void) = some_func;
+  send_message(&mailbox, &func_p);
+  printf("            \r"); 
+  printf("            \r"); 
+ 
+  thread_exit(); }
+
+void thread2(void)
+{ int (**func_p)(void) = NULL;
+  while (1)
+  { func_p = wait_message(&mailbox);
+    if ((*funct_p)() != 1) { thread_exit(); } } }
+
+int main()
+{ thread_create(thread2);
+  delay(1000);
+  thread_create(thread1);
+
+  while (1)
+  { do_something_important_else(); }
+
+  return 0; }
+```
+
+Example above based on my practice and  displays  main  mistake.   That  program
+crashes at random time but faults were not often.  Let's  see  how  it  "works".
+Thread one send message to thread two using special  synchronization  primitive.
+Thread two is suspended  while  waiting  incoming  message.   Printf  calls  are
+important because they perform zone where two threads exists in same moment  and
+shedule can switch threads between two  printf  statements.   Sometimes  shedule
+don't switch threads at this moment and thread2 runs  when  thread1  exited  and
+pointer to func\_p is invalidated, program crashes.  If you try to change number
+of whitespaces in printf states you can randomly change  fault  ratio.   If  you
+delete one of them you increase fault ratio by 2 because now you have  just  one
+place where threads can be switched.
+
+### why?
+
+Generally this kind of code produce people who every day trying to  prove  their
+salary using dirty methods.  They inject similar code in project in many  places
+and they control all project.  Fix this problems correctly is harder than  write
+project again.  Companies often don't want to rewrite code in any  case  because
+it requires to much money and time.  Also rewriting code can increase  power  of
+self- because he can inject danger code in much more  places.   Also  this
+code danger personally for you. Imagine what you have a task to fix something in
+similar code.  You can spent months for it.  But after  that  self-prover  "fix"
+problem in some hours.  Your manager can think what he is a good worker and  you
+is a pice of shit.
+
+### how to defeat it?
+
+At first you must make sure what similar code owns one person and he  is  really
+self-prover.  Secondary you must make sure what you able to defeat  him.   Often
+that persons have families and childs. Do you really harm his wife and children?
+Also prepare what succes rate is approximately 20 percents. May be less, but not
+more. And finally prepare what you will have many dirty work to fix project.
+
+Examine project how many code own potentially self-prover.  Quick look at it may
+take enough information.  Estimate how much code infected  and  how  much  tasks
+relates it.  If you think what it's too much for you just leave.  It means  what
+team lead think what it's normal. Or may be team lead actually is self-prover.
+
+If you sure what you can defeat it try to talk with him.   Self-provers  doesn't
+admit their mistakes or weakness in some kind of tasks.  And he  actually  weak.
+Examine his skills  but  prepare  what  he  can  lie.   Try  to  understand  his
+motivation.  Sometimes you can see person who just do that they  can.   You  can
+spend more time to work with him and teach to some good practices  and  he  will
+fix danger code himself. But it's rare situation.
+
+If previous has no effect talk with project manager or team lead.   Don't  speak
+directly about danger person.  Find out why danger code was peoved and  included
+in project.  Remember what it's in most cases is not a quick fix or  work  of  a
+novice.  Examine what manager think about danger code.  If he agree  it  -  just
+leave company at this stage.
+
+After you knew managers point of view you have three ways:
+
+- invalidate junk code using same methods and wait a moment when self-prover
+  will spend month with task. It's dangerous way because you can perform
+  deadline stalling.
+- make test which displays danger of self-prover's code. Create some issues in
+  bug tracker. Not so effective method because in real life companies which have
+  danger code ignore all safety practices.
+- open eyes of manager what danger code actually not pretty. Not so effective if
+  self-prover has significant power. Maybe manager knows it but he can't do
+  anything because he depend on self-prover. Also you can harm yourself.
+- fork project and improve it in your private time. After that let manager look
+  at that. Best way but hard.
+
+Junk code can't be refactored. Rewrited only. Refactor techniques at present day
+can't improve shit.
 
 # Epilogue
 
